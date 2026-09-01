@@ -21,6 +21,9 @@
     .blue:hover { background: #7ab8ff; }
     .outline { border: 1px solid #354050; color: white; background: transparent; }
     .outline:hover { border-color: #58a8ff; }
+    .admin-only { display: none; }
+    body.is-admin .admin-only { display: inline-block; }
+    .auth-status { font-size: 12px; color: #8995a5; margin-left: 10px; }
 
     /* Main Container */
     .container { padding: 40px 7%; max-width: 1200px; margin: 0 auto; }
@@ -86,15 +89,16 @@
       <a href="index.html#content">Контент</a>
       <a href="index.html#schedule">Розклад</a>
       <a href="calendar.html" class="active">Календар</a>
+      <a href="queue.html">Черга фільмів</a>
       <a href="index.html#socials">Соцмережі</a>
     </nav>
-    <a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
+    <div><button id="loginBtn" class="btn outline" onclick="openLoginModal()">Адмін</button> <button id="logoutBtn" class="btn outline admin-only" onclick="logoutAdmin()">Вийти</button><span id="authStatus" class="auth-status"></span></div>
   </header>
 
   <main class="container">
     <div class="header-actions">
       <h1 class="section-title">Календар <span>кіновечорів</span></h1>
-      <button class="btn blue" onclick="openModal()">+ Додати фільм</button>
+      <button class="btn blue admin-only" onclick="openModal()">+ Додати фільм</button>
     </div>
 
     <div class="cal-controls">
@@ -143,128 +147,98 @@
     </div>
   </div>
 
-  <script>
-    let currentDate = new Date();
-    let movies = JSON.parse(localStorage.getItem('yevheniipel_movies')) || [];
 
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <h3>Вхід адміністратора</h3>
+      <form id="loginForm">
+        <div class="form-group"><label>Email</label><input type="email" id="adminEmail" required></div>
+        <div class="form-group"><label>Пароль</label><input type="password" id="adminPassword" required></div>
+        <div id="loginError" style="color:#ff6374;font-size:13px"></div>
+        <div class="modal-actions"><button type="button" class="btn outline" onclick="closeLoginModal()">Скасувати</button><button type="submit" class="btn blue">Увійти</button></div>
+      </form>
+    </div>
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getDatabase, ref, onValue, push, set, remove, update } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",
+      authDomain: "yevheniipel.firebaseapp.com",
+      databaseURL: "https://yevheniipel-default-rtdb.europe-west1.firebasedatabase.app/",
+      projectId: "yevheniipel",
+      storageBucket: "yevheniipel.firebasestorage.app",
+      messagingSenderId: "1062789800045",
+      appId: "1:1062789800045:web:e72c6a2826b699fd579f64"
+    };
+    const ADMIN_UID = "DKOWrhsxWLUGiJyy6kyYjLVsZB22";
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const moviesRef = ref(db, 'movies');
+    let currentDate = new Date();
+    let movies = [];
+    let isAdmin = false;
     const monthNames = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
 
-    function saveMovies() {
-      localStorage.setItem('yevheniipel_movies', JSON.stringify(movies));
-    }
+    onValue(moviesRef, snap => {
+      const data = snap.val() || {};
+      movies = Object.entries(data).map(([id, m]) => ({id, ...m}));
+      renderCalendar();
+    });
+
+    onAuthStateChanged(auth, user => {
+      isAdmin = !!user && user.uid === ADMIN_UID;
+      document.body.classList.toggle('is-admin', isAdmin);
+      document.getElementById('loginBtn').style.display = isAdmin ? 'none' : 'inline-block';
+      document.getElementById('authStatus').textContent = isAdmin ? 'Адмін увійшов' : '';
+      renderCalendar();
+    });
 
     function renderCalendar() {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-
-      document.getElementById('monthYearLabel').innerText = `${monthNames[month]} ${year}`;
-
-      const grid = document.getElementById('calendarGrid');
-      // Clear previous day cells, keep header day names
-      const dayHeaderCount = 7;
-      while (grid.children.length > dayHeaderCount) {
-        grid.removeChild(grid.lastChild);
-      }
-
-      const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7; // Adjust for Monday start
-      const totalDays = new Date(year, month + 1, 0).getDate();
-      const today = new Date();
-
-      // Empty slots before 1st of month
-      for (let i = 0; i < firstDayIndex; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.className = 'day-cell empty';
-        grid.appendChild(emptyCell);
-      }
-
-      // Fill days
-      for (let day = 1; day <= totalDays; day++) {
-        const cell = document.createElement('div');
-        cell.className = 'day-cell';
-        
-        const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === day) {
-          cell.classList.add('today');
-        }
-
-        const numSpan = document.createElement('span');
-        numSpan.className = 'day-num';
-        numSpan.innerText = day;
-        cell.appendChild(numSpan);
-
-        // Filter movies for current date
-        const dayMovies = movies.filter(m => m.date === formattedDate);
-        dayMovies.forEach(movie => {
-          const mEl = document.createElement('div');
-          mEl.className = `movie-item ${movie.status}`;
-          mEl.innerHTML = `
-            <span>${movie.status === 'watched' ? '✓' : '•'} ${movie.title}</span>
-            <button class="del-btn" onclick="deleteMovie('${movie.id}', event)">✕</button>
-          `;
-          mEl.onclick = (e) => {
-            if(e.target.tagName !== 'BUTTON') toggleStatus(movie.id);
-          };
-          cell.appendChild(mEl);
+      const year=currentDate.getFullYear(), month=currentDate.getMonth();
+      document.getElementById('monthYearLabel').innerText=`${monthNames[month]} ${year}`;
+      const grid=document.getElementById('calendarGrid');
+      while(grid.children.length>7) grid.removeChild(grid.lastChild);
+      const firstDayIndex=(new Date(year,month,1).getDay()+6)%7;
+      const totalDays=new Date(year,month+1,0).getDate();
+      const today=new Date();
+      for(let i=0;i<firstDayIndex;i++){const e=document.createElement('div');e.className='day-cell empty';grid.appendChild(e);}
+      for(let day=1;day<=totalDays;day++){
+        const cell=document.createElement('div'); cell.className='day-cell';
+        const formattedDate=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        if(today.getFullYear()===year&&today.getMonth()===month&&today.getDate()===day) cell.classList.add('today');
+        const num=document.createElement('span');num.className='day-num';num.innerText=day;cell.appendChild(num);
+        movies.filter(m=>m.date===formattedDate).forEach(movie=>{
+          const el=document.createElement('div');el.className=`movie-item ${movie.status}`;
+          const title=document.createElement('span');title.textContent=`${movie.status==='watched'?'✓':'•'} ${movie.title}`;el.appendChild(title);
+          if(isAdmin){const b=document.createElement('button');b.className='del-btn';b.textContent='✕';b.onclick=e=>deleteMovie(movie.id,e);el.appendChild(b);el.onclick=e=>{if(e.target.tagName!=='BUTTON') toggleStatus(movie.id,movie.status)}}
+          cell.appendChild(el);
         });
-
         grid.appendChild(cell);
       }
     }
-
-    function changeMonth(delta) {
-      currentDate.setMonth(currentDate.getMonth() + delta);
-      renderCalendar();
-    }
-
-    function openModal() {
-      document.getElementById('movieModal').classList.add('active');
-      document.getElementById('movieDate').valueAsDate = new Date();
-    }
-
-    function closeModal() {
-      document.getElementById('movieModal').classList.remove('active');
-      document.getElementById('movieForm').reset();
-    }
-
-    function deleteMovie(id, e) {
-      e.stopPropagation();
-      movies = movies.filter(m => m.id !== id);
-      saveMovies();
-      renderCalendar();
-    }
-
-    function toggleStatus(id) {
-      movies = movies.map(m => {
-        if (m.id === id) {
-          return { ...m, status: m.status === 'planned' ? 'watched' : 'planned' };
-        }
-        return m;
-      });
-      saveMovies();
-      renderCalendar();
-    }
-
-    document.getElementById('movieForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const title = document.getElementById('movieTitle').value;
-      const date = document.getElementById('movieDate').value;
-      const status = document.getElementById('movieStatus').value;
-
-      movies.push({
-        id: Date.now().toString(),
-        title,
-        date,
-        status
-      });
-
-      saveMovies();
-      renderCalendar();
-      closeModal();
+    window.changeMonth=d=>{currentDate.setMonth(currentDate.getMonth()+d);renderCalendar()};
+    window.openModal=()=>{if(!isAdmin)return;document.getElementById('movieModal').classList.add('active');document.getElementById('movieDate').valueAsDate=new Date()};
+    window.closeModal=()=>{document.getElementById('movieModal').classList.remove('active');document.getElementById('movieForm').reset()};
+    window.deleteMovie=async(id,e)=>{e.stopPropagation();if(isAdmin&&confirm('Видалити цей запис?')) await remove(ref(db,`movies/${id}`))};
+    window.toggleStatus=async(id,status)=>{if(isAdmin) await update(ref(db,`movies/${id}`),{status:status==='planned'?'watched':'planned'})};
+    window.openLoginModal=()=>document.getElementById('loginModal').classList.add('active');
+    window.closeLoginModal=()=>{document.getElementById('loginModal').classList.remove('active');document.getElementById('loginError').textContent=''};
+    window.logoutAdmin=()=>signOut(auth);
+    document.getElementById('movieForm').addEventListener('submit',async e=>{
+      e.preventDefault();if(!isAdmin)return;
+      const newRef=push(moviesRef);
+      await set(newRef,{title:document.getElementById('movieTitle').value.trim(),date:document.getElementById('movieDate').value,status:document.getElementById('movieStatus').value,createdAt:Date.now()});
+      window.closeModal();
     });
-
-    // Initial load
-    renderCalendar();
+    document.getElementById('loginForm').addEventListener('submit',async e=>{
+      e.preventDefault();document.getElementById('loginError').textContent='';
+      try { const c=await signInWithEmailAndPassword(auth,document.getElementById('adminEmail').value,document.getElementById('adminPassword').value); if(c.user.uid!==ADMIN_UID){await signOut(auth);throw new Error('not-admin')} window.closeLoginModal(); }
+      catch(err){document.getElementById('loginError').textContent='Не вдалося увійти. Перевір email і пароль.'}
+    });
   </script>
 </body>
 </html>
