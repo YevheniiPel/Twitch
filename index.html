@@ -47,7 +47,7 @@ body{padding-bottom:92px}
 .ym-close{width:42px;height:42px;border-radius:50%;border:1px solid #303846;background:#10151d;color:#fff;cursor:pointer;font-size:20px}
 .ym-list{display:grid;gap:7px}
 .ym-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px;border-radius:10px;border:1px solid transparent;background:#0d1118;cursor:pointer}
-.ym-item:hover,.ym-item.active{border-color:#354558;background:#111925}
+.ym-item:hover,.ym-item.active{border-color:#354558;background:#111925}.ym-item.invalid{opacity:.58;cursor:not-allowed}
 .ym-num{width:36px;height:36px;display:grid;place-items:center;color:#7f8b99;font-weight:800}
 .ym-item-title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ym-item-meta{font-size:12px;color:#808b99;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -89,7 +89,13 @@ body{padding-bottom:92px}
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Женя.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
 <section id="content" class="section"><div class="label">02 / КОНТЕНТ</div><h2>Що будемо <span>робити?</span></h2><div class="cards"><article class="card"><div class="icon">🎮</div><h3>Ігри</h3><p>Різні ігри, живий чат і моменти, які народжуються прямо на стрімі.</p></article><article class="card"><div class="icon">🎬</div><h3>Фільми & шоу</h3><p>Спільні перегляди та вечори з хорошим кіно і компанією.</p></article><article class="card"><div class="icon">💬</div><h3>Just Chatting</h3><p>Розмови, історії, новини та все, що хочеться обговорити.</p></article></div></section>
 
-<section id="music" class="section"><div class="label">03 / МУЗИКА</div><h2>Музика <span>від глядачів.</span></h2><p style="color:#8995a5;line-height:1.8;max-width:760px">Плеєр тепер закріплений унизу сторінки, як у YouTube Music. Натисни на назву поточного треку або кнопку «Черга», щоб побачити замовлені пісні та хто їх замовив.</p><details class="music-admin"><summary>⚙️ Тестове керування музикою</summary><form class="music-form" id="musicForm"><input class="full" id="musicUrl" type="url" placeholder="Посилання YouTube або YouTube Music" required><input id="musicTitle" type="text" placeholder="Назва треку"><input id="musicArtist" type="text" placeholder="Виконавець"><input id="musicRequester" type="text" placeholder="Хто замовив"><button type="submit">＋ Додати в чергу</button><div class="music-msg" id="musicMsg"></div></form></details></section><section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Вт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div></div></section>
+<section id="music" class="section"><div class="label">03 / МУЗИКА</div><h2>Музика <span>від глядачів.</span></h2><p style="color:#8995a5;line-height:1.8;max-width:760px">Плеєр тепер закріплений унизу сторінки, як у YouTube Music. Натисни на назву поточного треку або кнопку «Черга», щоб побачити замовлені пісні та хто їх замовив.</p><div class="music-admin">
+      <strong style="color:#dce7f2">🎁 Замовлення через Twitch</strong>
+      <div style="color:#8794a5;font-size:13px;line-height:1.6;margin-top:8px">
+        Глядач використовує нагороду <b style="color:#fff">«Замовити пісню 🎵»</b>
+        та вставляє посилання YouTube або YouTube Music. Пісня автоматично з’явиться в черзі нижнього плеєра.
+      </div>
+    </div></section><section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Вт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div></div></section>
 <section id="socials" class="section socials"><div><div class="label">05 / СПІЛЬНОТА</div><h2>Будьмо<br><span>на зв'язку.</span></h2></div><div class="socialgrid"><a class="social" href="https://t.me/ZhenyaTwitch" target="_blank"><b>Telegram →</b><strong>📲</strong><small>@ZhenyaTwitch</small></a><a class="social" href="https://www.instagram.com/peleshko_yevgen/" target="_blank"><b>Instagram →</b><strong>◎</strong><small>@peleshko_yevgen</small></a><a class="social" href="https://www.twitch.tv/yevheniipel" target="_blank"><b>Twitch →</b><strong>◉</strong><small>YevheniiPel</small></a><a class="social" href="#top"><b>На головну ↑</b><strong>✦</strong><small>YevheniiPel</small></a></div></section>
 <section class="cta"><div><div class="label">YEVHENIIPEL</div><h2>Заходь на стрім.<br><span>Будемо знайомі.</span></h2></div><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Перейти на Twitch ↗</a></section></main>
 <footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer>
@@ -131,147 +137,282 @@ body{padding-bottom:92px}
   </div>
 </div>
 
-<script>
-(function(){
-  const form=document.getElementById('musicForm');
-  const msg=document.getElementById('musicMsg');
-  const queueBox=document.getElementById('ymQueue');
-  const list=document.getElementById('ymList');
-  const playBtn=document.getElementById('ymPlay');
-  let queue=[];
-  let current=-1;
-  let player=null;
-  let apiReady=false;
 
-  function getVideoId(raw){
-    try{
-      const u=new URL(raw.trim());
-      const host=u.hostname.replace(/^www\./,'');
-      if(host==='youtu.be') return u.pathname.split('/').filter(Boolean)[0]||'';
-      if(host==='youtube.com'||host==='m.youtube.com'||host==='music.youtube.com'){
-        if(u.pathname==='/watch') return u.searchParams.get('v')||'';
-        const parts=u.pathname.split('/').filter(Boolean);
-        const i=parts.findIndex(x=>['embed','shorts','live'].includes(x));
-        if(i>=0&&parts[i+1]) return parts[i+1];
-      }
-    }catch(e){}
-    return '';
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",
+  authDomain: "yevheniipel.firebaseapp.com",
+  databaseURL: "https://yevheniipel-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId: "yevheniipel",
+  storageBucket: "yevheniipel.firebasestorage.app",
+  messagingSenderId: "1062789800045",
+  appId: "1:1062789800045:web:e72c6a2826b699fd579f64"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const musicRef = ref(db, "musicQueue");
+
+const queueBox = document.getElementById("ymQueue");
+const list = document.getElementById("ymList");
+const playBtn = document.getElementById("ymPlay");
+
+let queue = [];
+let current = -1;
+let player = null;
+let apiReady = false;
+
+function esc(s = "") {
+  return String(s).replace(/[&<>'"]/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[c]));
+}
+
+function thumb(track) {
+  if (track.thumbnailUrl) return track.thumbnailUrl;
+  if (track.videoId) {
+    return `https://i.ytimg.com/vi/${encodeURIComponent(track.videoId)}/mqdefault.jpg`;
+  }
+  return "";
+}
+
+function updateBar() {
+  const t = queue[current];
+
+  document.getElementById("ymTitle").textContent =
+    t?.title || "Нічого не грає";
+
+  document.getElementById("ymArtist").textContent =
+    t?.artist || "—";
+
+  document.getElementById("ymRequester").textContent =
+    t?.requester || "—";
+
+  const box = document.getElementById("ymThumb");
+  const image = t ? thumb(t) : "";
+
+  box.innerHTML = image
+    ? `<img src="${esc(image)}" alt="">`
+    : "♫";
+
+  renderQueue();
+}
+
+function renderQueue() {
+  if (!queue.length) {
+    list.innerHTML =
+      '<div style="color:#778392;padding:20px 10px">Черга поки порожня. Замовлення з Twitch з’являться тут автоматично.</div>';
+    return;
   }
 
-  function thumb(id){return 'https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/mqdefault.jpg';}
-
-  function updateBar(){
-    const t=queue[current];
-    document.getElementById('ymTitle').textContent=t?.title||'Нічого не грає';
-    document.getElementById('ymArtist').textContent=t?.artist||'—';
-    document.getElementById('ymRequester').textContent=t?.requester||'—';
-    const b=document.getElementById('ymThumb');
-    b.innerHTML=t?'<img src="'+thumb(t.videoId)+'" alt="">':'♫';
-    renderQueue();
-  }
-
-  function renderQueue(){
-    if(!queue.length){
-      list.innerHTML='<div style="color:#778392;padding:20px 10px">Черга поки порожня.</div>';
-      return;
-    }
-    list.innerHTML=queue.map((t,i)=>`
-      <div class="ym-item ${i===current?'active':''}" data-index="${i}">
-        <div class="ym-num">${i===current?'▶':i+1}</div>
-        <div>
-          <div class="ym-item-title">${escapeHtml(t.title||'YouTube трек')}</div>
-          <div class="ym-item-meta">${escapeHtml(t.artist||'Виконавець не вказаний')}</div>
+  list.innerHTML = queue.map((t, i) => `
+    <div class="ym-item ${i === current ? "active" : ""} ${t.status === "invalid" ? "invalid" : ""}" data-index="${i}">
+      <div class="ym-num">${i === current ? "▶" : i + 1}</div>
+      <div>
+        <div class="ym-item-title">${esc(t.title || "YouTube трек")}</div>
+        <div class="ym-item-meta">
+          ${t.status === "invalid"
+            ? "⚠️ Неправильне YouTube-посилання"
+            : esc(t.artist || "Виконавець не вказаний")}
         </div>
-        <div class="ym-item-who">Замовив: ${escapeHtml(t.requester||'YevheniiPel')}</div>
       </div>
-    `).join('');
-    list.querySelectorAll('.ym-item').forEach(el=>el.addEventListener('click',()=>playIndex(Number(el.dataset.index))));
+      <div class="ym-item-who">Замовив: ${esc(t.requester || "Невідомий")}</div>
+    </div>
+  `).join("");
+
+  list.querySelectorAll(".ym-item").forEach(el => {
+    el.addEventListener("click", () => {
+      const i = Number(el.dataset.index);
+      if (queue[i]?.status === "invalid" || !queue[i]?.videoId) return;
+      playIndex(i);
+    });
+  });
+}
+
+function ensureApi() {
+  if (window.YT && window.YT.Player) {
+    apiReady = true;
+    return;
   }
 
-  function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+  if (document.getElementById("youtubeApi")) return;
 
-  function ensureApi(){
-    if(window.YT&&window.YT.Player){apiReady=true;return;}
-    if(document.getElementById('youtubeApi')) return;
-    const s=document.createElement('script');
-    s.id='youtubeApi';
-    s.src='https://www.youtube.com/iframe_api';
-    document.head.appendChild(s);
+  const script = document.createElement("script");
+  script.id = "youtubeApi";
+  script.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(script);
+}
+
+window.onYouTubeIframeAPIReady = function () {
+  apiReady = true;
+};
+
+function createOrLoad(videoId) {
+  if (!apiReady) {
+    ensureApi();
+    return;
   }
 
-  window.onYouTubeIframeAPIReady=function(){
-    apiReady=true;
-    if(current>=0) createOrLoad(queue[current].videoId);
-  };
+  if (!player) {
+    let host = document.getElementById("hiddenYT");
 
-  function createOrLoad(videoId){
-    if(!apiReady){ensureApi();return;}
-    if(!player){
-      const div=document.createElement('div');
-      div.id='hiddenYT';
-      document.getElementById('musicFrameHost').appendChild(div);
-      player=new YT.Player('hiddenYT',{
-        height:'1',width:'1',videoId,
-        playerVars:{autoplay:1,playsinline:1,rel:0},
-        events:{
-          onReady:e=>{e.target.playVideo();playBtn.textContent='⏸';},
-          onStateChange:e=>{
-            if(e.data===YT.PlayerState.PLAYING) playBtn.textContent='⏸';
-            if(e.data===YT.PlayerState.PAUSED) playBtn.textContent='▶';
-            if(e.data===YT.PlayerState.ENDED) nextTrack();
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "hiddenYT";
+      document.getElementById("musicFrameHost").appendChild(host);
+    }
+
+    player = new YT.Player("hiddenYT", {
+      height: "1",
+      width: "1",
+      videoId,
+      playerVars: {
+        autoplay: 1,
+        playsinline: 1,
+        rel: 0
+      },
+      events: {
+        onReady: e => {
+          e.target.playVideo();
+          playBtn.textContent = "⏸";
+        },
+        onStateChange: e => {
+          if (e.data === YT.PlayerState.PLAYING) {
+            playBtn.textContent = "⏸";
+          }
+          if (e.data === YT.PlayerState.PAUSED) {
+            playBtn.textContent = "▶";
+          }
+          if (e.data === YT.PlayerState.ENDED) {
+            nextTrack();
           }
         }
-      });
-    }else{
-      player.loadVideoById(videoId);
-      playBtn.textContent='⏸';
+      }
+    });
+  } else {
+    player.loadVideoById(videoId);
+    playBtn.textContent = "⏸";
+  }
+}
+
+function playIndex(i) {
+  if (i < 0 || i >= queue.length) return;
+  if (!queue[i]?.videoId || queue[i]?.status === "invalid") return;
+
+  current = i;
+  updateBar();
+  createOrLoad(queue[current].videoId);
+}
+
+function nextTrack() {
+  if (!queue.length) return;
+
+  let i = current;
+
+  for (let tries = 0; tries < queue.length; tries++) {
+    i = (i + 1) % queue.length;
+
+    if (queue[i]?.videoId && queue[i]?.status !== "invalid") {
+      playIndex(i);
+      return;
     }
   }
+}
 
-  function playIndex(i){
-    if(i<0||i>=queue.length)return;
-    current=i;
-    updateBar();
-    createOrLoad(queue[current].videoId);
+function prevTrack() {
+  if (!queue.length) return;
+
+  let i = current;
+
+  for (let tries = 0; tries < queue.length; tries++) {
+    i = (i - 1 + queue.length) % queue.length;
+
+    if (queue[i]?.videoId && queue[i]?.status !== "invalid") {
+      playIndex(i);
+      return;
+    }
+  }
+}
+
+function toggleQueue() {
+  queueBox.classList.toggle("open");
+}
+
+document.getElementById("ymQueueBtn")
+  .addEventListener("click", toggleQueue);
+
+document.getElementById("ymTrack")
+  .addEventListener("click", toggleQueue);
+
+document.getElementById("ymTrack")
+  .addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleQueue();
+    }
+  });
+
+document.getElementById("ymClose")
+  .addEventListener("click", () => queueBox.classList.remove("open"));
+
+document.getElementById("ymNext")
+  .addEventListener("click", nextTrack);
+
+document.getElementById("ymPrev")
+  .addEventListener("click", prevTrack);
+
+playBtn.addEventListener("click", () => {
+  if (current < 0) {
+    const first = queue.findIndex(
+      t => t.videoId && t.status !== "invalid"
+    );
+
+    if (first >= 0) playIndex(first);
+    return;
   }
 
-  function nextTrack(){if(!queue.length)return;playIndex((current+1)%queue.length);}
-  function prevTrack(){if(!queue.length)return;playIndex((current-1+queue.length)%queue.length);}
+  if (!player) {
+    playIndex(current);
+    return;
+  }
 
-  function toggleQueue(){queueBox.classList.toggle('open');}
-  document.getElementById('ymQueueBtn').addEventListener('click',toggleQueue);
-  document.getElementById('ymTrack').addEventListener('click',toggleQueue);
-  document.getElementById('ymTrack').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleQueue();}});
-  document.getElementById('ymClose').addEventListener('click',()=>queueBox.classList.remove('open'));
-  document.getElementById('ymNext').addEventListener('click',nextTrack);
-  document.getElementById('ymPrev').addEventListener('click',prevTrack);
-  playBtn.addEventListener('click',()=>{
-    if(current<0&&queue.length){playIndex(0);return;}
-    if(!player)return;
-    const state=player.getPlayerState();
-    if(state===YT.PlayerState.PLAYING)player.pauseVideo();else player.playVideo();
-  });
+  const state = player.getPlayerState();
 
-  form.addEventListener('submit',e=>{
-    e.preventDefault();
-    const url=document.getElementById('musicUrl').value;
-    const id=getVideoId(url);
-    if(!id){msg.textContent='Не вдалося розпізнати YouTube-посилання.';return;}
-    const item={
-      videoId:id,
-      title:document.getElementById('musicTitle').value.trim()||'YouTube трек',
-      artist:document.getElementById('musicArtist').value.trim()||'Виконавець не вказаний',
-      requester:document.getElementById('musicRequester').value.trim()||'YevheniiPel'
-    };
-    queue.push(item);
-    renderQueue();
-    if(current<0)playIndex(0);
-    form.reset();
-    msg.textContent='Додано в чергу. Натисни на трек унизу, щоб її відкрити.';
-  });
+  if (state === YT.PlayerState.PLAYING) {
+    player.pauseVideo();
+  } else {
+    player.playVideo();
+  }
+});
 
-  ensureApi();
+onValue(musicRef, snapshot => {
+  const data = snapshot.val() || {};
+
+  const previousId = queue[current]?.id || null;
+
+  queue = Object.entries(data)
+    .map(([id, item]) => ({ id, ...item }))
+    .sort((a, b) =>
+      String(a.createdAt || "").localeCompare(String(b.createdAt || ""))
+    );
+
+  if (previousId) {
+    current = queue.findIndex(t => t.id === previousId);
+  }
+
+  if (current >= queue.length) current = -1;
+
   updateBar();
-})();
+});
+
+ensureApi();
+updateBar();
 </script>
 </body></html>
