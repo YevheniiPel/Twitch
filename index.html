@@ -1,18 +1,128 @@
 <!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YevheniiPel</title><style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#07090d;color:#f4f7fb;font-family:Arial,sans-serif}.nav{position:sticky;top:0;padding:20px 7%;display:flex;justify-content:space-between;align-items:center;background:#07090dee;border-bottom:1px solid #222936;z-index:5}.logo{font-size:25px;font-weight:900}.logo span,h1 span,h2 span{color:#58a8ff}nav{display:flex;gap:25px}nav a{color:#a8b1bf;text-decoration:none;font-size:14px}.btn{display:inline-block;padding:14px 20px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:14px}.blue{background:#58a8ff;color:#06101a}.outline{border:1px solid #354050;color:white}.hero{min-height:650px;padding:90px 7%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;background:radial-gradient(circle at 80% 25%,#173d62,transparent 35%)}.tag{color:#8995a5;font-size:12px;letter-spacing:2px;font-weight:bold}.tag i{color:#ff6374}.hero h1{font-size:clamp(60px,9vw,115px);line-height:.85;letter-spacing:-7px;margin:25px 0}.hero p{color:#9aa5b4;max-width:520px;font-size:18px;line-height:1.7}.buttons{display:flex;gap:12px;margin-top:30px}.screen{background:#0d121a;border:1px solid #293341;border-radius:20px;padding:10px;box-shadow:0 30px 80px #0008}.screenbox{aspect-ratio:16/9;border-radius:12px;background:radial-gradient(circle,#204d78,#080b10 65%);display:grid;place-items:center;position:relative}.play{width:65px;height:65px;border:1px solid #74b9ff;border-radius:50%;display:grid;place-items:center;color:#8fcaff;font-size:22px}.screenlabel{position:absolute;bottom:20px;text-align:center}.screenlabel small{display:block;color:#8995a5;margin-top:6px}.bar{display:flex;justify-content:space-between;padding:10px;color:#aab4c1;font-size:12px}.live{color:#ff6878;font-weight:bold}.stats{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid #202630}.stats div{padding:28px 7%;border-right:1px solid #202630}.stats div:last-child{border:0}.stats b{font-size:28px}.stats small{display:block;color:#707b8a;margin-top:6px}.section{padding:100px 10%;border-bottom:1px solid #181d25}.label{font-size:11px;letter-spacing:2px;color:#7e8998;font-weight:bold}.section h2{font-size:clamp(40px,5vw,68px);line-height:.95;letter-spacing:-3px}.about{display:grid;grid-template-columns:.5fr 1fr;gap:80px}.about p{color:#8993a1;line-height:1.8;max-width:720px}.lead{font-size:24px!important;color:#e1e6ec!important}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#0d1118;border:1px solid #242c38;border-radius:16px;padding:28px;transition:.2s}.card:hover{transform:translateY(-5px);border-color:#58a8ff}.card .icon{font-size:28px}.card h3{font-size:21px}.card p{color:#7e8997;line-height:1.7}.days{margin-top:30px;border-top:1px solid #242b35}.day{display:grid;grid-template-columns:80px 130px 1fr;padding:22px 0;border-bottom:1px solid #242b35}.day span,.day small{color:#7d8897}.day b{font-size:21px}.socials{display:grid;grid-template-columns:1fr 2fr;gap:70px}.socialgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.social{min-height:150px;background:#0b0f15;border:1px solid #252d39;border-radius:15px;padding:23px;display:flex;flex-direction:column;text-decoration:none}.social:hover{border-color:#58a8ff}.social strong{margin-top:auto;font-size:25px;color:#58a8ff}.social small{color:#778291}.cta{margin:70px 7%;padding:55px 6%;border:1px solid #293543;border-radius:22px;background:linear-gradient(120deg,#0e1824,#090c11);display:flex;justify-content:space-between;align-items:center}.cta h2{font-size:clamp(36px,5vw,62px);line-height:.95;letter-spacing:-3px}footer{padding:30px 7%;display:flex;justify-content:space-between;color:#65707f;font-size:11px}@media(max-width:800px){nav{display:none}.hero{grid-template-columns:1fr;padding:65px 7%}.hero h1{letter-spacing:-4px}.about,.cards,.socials{grid-template-columns:1fr}.socialgrid{grid-template-columns:1fr}.day{grid-template-columns:55px 90px 1fr}.cta{display:block}.cta .btn{margin-top:20px}footer{display:block;line-height:2}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#07090d;color:#f4f7fb;font-family:Arial,sans-serif}.nav{position:sticky;top:0;padding:20px 7%;display:flex;justify-content:space-between;align-items:center;background:#07090dee;border-bottom:1px solid #222936;z-index:5}.logo{font-size:25px;font-weight:900}.logo span,h1 span,h2 span{color:#58a8ff}nav{display:flex;gap:25px}nav a{color:#a8b1bf;text-decoration:none;font-size:14px}.btn{display:inline-block;padding:14px 20px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:14px}.blue{background:#58a8ff;color:#06101a}.outline{border:1px solid #354050;color:white}.hero{min-height:650px;padding:90px 7%;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;background:radial-gradient(circle at 80% 25%,#173d62,transparent 35%)}.tag{color:#8995a5;font-size:12px;letter-spacing:2px;font-weight:bold}.tag i{color:#ff6374}.hero h1{font-size:clamp(60px,9vw,115px);line-height:.85;letter-spacing:-7px;margin:25px 0}.hero p{color:#9aa5b4;max-width:520px;font-size:18px;line-height:1.7}.buttons{display:flex;gap:12px;margin-top:30px}.screen{background:#0d121a;border:1px solid #293341;border-radius:20px;padding:10px;box-shadow:0 30px 80px #0008}.screenbox{aspect-ratio:16/9;border-radius:12px;background:radial-gradient(circle,#204d78,#080b10 65%);display:grid;place-items:center;position:relative}.play{width:65px;height:65px;border:1px solid #74b9ff;border-radius:50%;display:grid;place-items:center;color:#8fcaff;font-size:22px}.screenlabel{position:absolute;bottom:20px;text-align:center}.screenlabel small{display:block;color:#8995a5;margin-top:6px}.bar{display:flex;justify-content:space-between;padding:10px;color:#aab4c1;font-size:12px}.live{color:#ff6878;font-weight:bold}.stats{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid #202630}.stats div{padding:28px 7%;border-right:1px solid #202630}.stats div:last-child{border:0}.stats b{font-size:28px}.stats small{display:block;color:#707b8a;margin-top:6px}.section{padding:100px 10%;border-bottom:1px solid #181d25}.label{font-size:11px;letter-spacing:2px;color:#7e8998;font-weight:bold}.section h2{font-size:clamp(40px,5vw,68px);line-height:.95;letter-spacing:-3px}.about{display:grid;grid-template-columns:.5fr 1fr;gap:80px}.about p{color:#8993a1;line-height:1.8;max-width:720px}.lead{font-size:24px!important;color:#e1e6ec!important}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#0d1118;border:1px solid #242c38;border-radius:16px;padding:28px;transition:.2s}.card:hover{transform:translateY(-5px);border-color:#58a8ff}.card .icon{font-size:28px}.card h3{font-size:21px}.card p{color:#7e8997;line-height:1.7}.days{margin-top:30px;border-top:1px solid #242b35}.day{display:grid;grid-template-columns:80px 130px 1fr;padding:22px 0;border-bottom:1px solid #242b35}.day span,.day small{color:#7d8897}.day b{font-size:21px}.socials{display:grid;grid-template-columns:1fr 2fr;gap:70px}.socialgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.social{min-height:150px;background:#0b0f15;border:1px solid #252d39;border-radius:15px;padding:23px;display:flex;flex-direction:column;text-decoration:none}.social:hover{border-color:#58a8ff}.social strong{margin-top:auto;font-size:25px;color:#58a8ff}.social small{color:#778291}.cta{margin:70px 7%;padding:55px 6%;border:1px solid #293543;border-radius:22px;background:linear-gradient(120deg,#0e1824,#090c11);display:flex;justify-content:space-between;align-items:center}.cta h2{font-size:clamp(36px,5vw,62px);line-height:.95;letter-spacing:-3px}footer{padding:30px 7%;display:flex;justify-content:space-between;color:#65707f;font-size:11px}
+.music-section{padding:100px 10%;border-bottom:1px solid #181d25}
+.music-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:34px}
+.music-head h2{font-size:clamp(40px,5vw,68px);line-height:.95;letter-spacing:-3px;margin:14px 0 0}
+.music-sub{color:#8995a5;max-width:560px;line-height:1.7;margin:0}
+.music-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px}
+.yt-card,.now-card{background:#0d1118;border:1px solid #242c38;border-radius:18px;overflow:hidden}
+.player-wrap{aspect-ratio:16/9;background:radial-gradient(circle at 50% 45%,#173d62,#080b10 65%);position:relative}
+.player-wrap iframe{width:100%;height:100%;border:0;display:block}
+.player-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px;color:#7f8b99}
+.player-empty strong{display:block;color:#dbe5ef;font-size:20px;margin-bottom:8px}
+.yt-note{padding:14px 18px;border-top:1px solid #202936;color:#778392;font-size:12px}
+.now-card{padding:24px;display:flex;flex-direction:column;min-width:0}
+.now-badge{display:inline-flex;align-items:center;gap:8px;color:#8fcaff;font-size:11px;font-weight:800;letter-spacing:1.4px}
+.now-badge i{width:8px;height:8px;border-radius:50%;background:#58a8ff;box-shadow:0 0 15px #58a8ff;display:inline-block}
+.track-title{font-size:clamp(26px,3vw,38px);line-height:1.05;margin:24px 0 8px;word-break:break-word}
+.track-artist{color:#98a5b5;font-size:15px;margin-bottom:24px}
+.track-meta{margin-top:auto;border-top:1px solid #222b36;padding-top:18px;display:grid;gap:10px;color:#768292;font-size:13px}
+.track-meta b{color:#d5dce5}
+.music-admin{margin-top:18px;padding:20px;background:#090d13;border:1px solid #222b36;border-radius:15px}
+.music-admin summary{cursor:pointer;color:#9db8d4;font-weight:700}
+.music-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.music-form .full{grid-column:1/-1}
+.music-form input{width:100%;background:#07090d;color:#fff;border:1px solid #293341;border-radius:9px;padding:12px;font-size:14px;outline:none}
+.music-form input:focus{border-color:#58a8ff}
+.music-form button{border:0;border-radius:9px;padding:12px 16px;background:#58a8ff;color:#06101a;font-weight:800;cursor:pointer}
+.music-msg{font-size:12px;color:#8794a5;grid-column:1/-1;min-height:16px}
+@media(max-width:800px){.music-section{padding:75px 7%}.music-shell{grid-template-columns:1fr}.music-form{grid-template-columns:1fr}.music-form .full{grid-column:auto}}
+@media(max-width:800px){nav{display:none}.hero{grid-template-columns:1fr;padding:65px 7%}.hero h1{letter-spacing:-4px}.about,.cards,.socials{grid-template-columns:1fr}.socialgrid{grid-template-columns:1fr}.day{grid-template-columns:55px 90px 1fr}.cta{display:block}.cta .btn{margin-top:20px}footer{display:block;line-height:2}}
 </style></head><body>
-<header class="nav"><a class="logo" href="#top">Yevhenii<span>Pel</span><nav>
-  <a href="#about">Про мене</a>
-  <a href="#content">Контент</a>
-  <a href="#schedule">Розклад</a>
-  <a href="calendar.html">Календар</a>
-  <a href="#socials">Соцмережі</a>
-</nav></nav><a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a></header>
-<main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Євгеній.</span></h1><p> Фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
+<header class="nav"><a class="logo" href="#top">Yevhenii<span>Pel</span></a><nav><a href="#about">Про мене</a><a href="#content">Контент</a><a href="#music">Музика</a><a href="#schedule">Розклад</a><a href="#socials">Соцмережі</a></nav><a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a></header>
+<main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Женя.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
 <section class="stats"><div><b>01</b><small>Стрімер</small></div><div><b>∞</b><small>Ідей</small></div><div><b>100%</b><small>Живого контенту</small></div></section>
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Женя.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
 <section id="content" class="section"><div class="label">02 / КОНТЕНТ</div><h2>Що будемо <span>робити?</span></h2><div class="cards"><article class="card"><div class="icon">🎮</div><h3>Ігри</h3><p>Різні ігри, живий чат і моменти, які народжуються прямо на стрімі.</p></article><article class="card"><div class="icon">🎬</div><h3>Фільми & шоу</h3><p>Спільні перегляди та вечори з хорошим кіно і компанією.</p></article><article class="card"><div class="icon">💬</div><h3>Just Chatting</h3><p>Розмови, історії, новини та все, що хочеться обговорити.</p></article></div></section>
-<section id="schedule" class="section"><div class="label">03 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><div class="day"><span>Пн</span><b>19:00</b><small>Стрім</small></div></div></div></div><div class="day"><span>Вт</span><b>Вихідний</b><small></small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>Вихідний</b><small></small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div></div></div><div class="day"><span>Сб</span><b>10:00</b><small>Стрім</small></div></div></div><div class="day"><span>Нд</span><b>Вихідний</b><small></small></div></div></section>
-<section id="socials" class="section socials"><div><div class="label">04 / СПІЛЬНОТА</div><h2>Будьмо<br><span>на зв'язку.</span></h2></div><div class="socialgrid"><a class="social" href="https://t.me/ZhenyaTwitch" target="_blank"><b>Telegram →</b><strong>📲</strong><small>@ZhenyaTwitch</small></a><a class="social" href="https://www.instagram.com/peleshko_yevgen/" target="_blank"><b>Instagram →</b><strong>◎</strong><small>@peleshko_yevgen</small></a><a class="social" href="https://www.twitch.tv/yevheniipel" target="_blank"><b>Twitch →</b><strong>◉</strong><small>YevheniiPel</small></a><a class="social" href="#top"><b>На головну ↑</b><strong>✦</strong><small>YevheniiPel</small></a></div></section>
+
+<section id="music" class="music-section">
+  <div class="music-head">
+    <div>
+      <div class="label">03 / МУЗИКА</div>
+      <h2>На стрімі зараз <span>грає.</span></h2>
+    </div>
+    <p class="music-sub">Перша версія музичного блоку. Плеєр приймає звичайні YouTube та YouTube Music посилання. Далі під'єднаємо замовлення глядачів через Twitch і Firebase.</p>
+  </div>
+
+  <div class="music-shell">
+    <div class="yt-card">
+      <div class="player-wrap">
+        <div class="player-empty" id="musicEmpty">
+          <div><strong>🎵 Трек ще не вибрано</strong><span>В адмін-блоці нижче встав посилання з YouTube або YouTube Music.</span></div>
+        </div>
+        <iframe id="musicFrame" title="YouTube музичний плеєр" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen hidden></iframe>
+      </div>
+      <div class="yt-note">Відтворення відбувається через офіційний YouTube embed-плеєр.</div>
+    </div>
+
+    <div class="now-card">
+      <div class="now-badge"><i></i> NOW PLAYING</div>
+      <div class="track-title" id="trackTitle">Нічого не грає</div>
+      <div class="track-artist" id="trackArtist">—</div>
+      <div class="track-meta">
+        <div>Замовив: <b id="trackRequester">—</b></div>
+        <div>Джерело: <b>YouTube / YouTube Music</b></div>
+      </div>
+    </div>
+  </div>
+
+  <details class="music-admin">
+    <summary>⚙️ Тестове керування плеєром</summary>
+    <form class="music-form" id="musicForm">
+      <input class="full" id="musicUrl" type="url" placeholder="Посилання YouTube або YouTube Music" required>
+      <input id="musicTitle" type="text" placeholder="Назва треку">
+      <input id="musicArtist" type="text" placeholder="Виконавець">
+      <input id="musicRequester" type="text" placeholder="Хто замовив">
+      <button type="submit">▶ Увімкнути</button>
+      <div class="music-msg" id="musicMsg"></div>
+    </form>
+  </details>
+</section>
+<section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Вт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div></div></section>
+<section id="socials" class="section socials"><div><div class="label">05 / СПІЛЬНОТА</div><h2>Будьмо<br><span>на зв'язку.</span></h2></div><div class="socialgrid"><a class="social" href="https://t.me/ZhenyaTwitch" target="_blank"><b>Telegram →</b><strong>📲</strong><small>@ZhenyaTwitch</small></a><a class="social" href="https://www.instagram.com/peleshko_yevgen/" target="_blank"><b>Instagram →</b><strong>◎</strong><small>@peleshko_yevgen</small></a><a class="social" href="https://www.twitch.tv/yevheniipel" target="_blank"><b>Twitch →</b><strong>◉</strong><small>YevheniiPel</small></a><a class="social" href="#top"><b>На головну ↑</b><strong>✦</strong><small>YevheniiPel</small></a></div></section>
 <section class="cta"><div><div class="label">YEVHENIIPEL</div><h2>Заходь на стрім.<br><span>Будемо знайомі.</span></h2></div><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Перейти на Twitch ↗</a></section></main>
-<footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer></body></html>
+<footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer>
+<script>
+(function(){
+  const form=document.getElementById('musicForm');
+  const urlInput=document.getElementById('musicUrl');
+  const titleInput=document.getElementById('musicTitle');
+  const artistInput=document.getElementById('musicArtist');
+  const requesterInput=document.getElementById('musicRequester');
+  const frame=document.getElementById('musicFrame');
+  const empty=document.getElementById('musicEmpty');
+  const msg=document.getElementById('musicMsg');
+
+  function getVideoId(raw){
+    try{
+      const u=new URL(raw.trim());
+      const host=u.hostname.replace(/^www\./,'');
+      if(host==='youtu.be') return u.pathname.split('/').filter(Boolean)[0]||'';
+      if(host==='youtube.com'||host==='m.youtube.com'||host==='music.youtube.com'){
+        if(u.pathname==='/watch') return u.searchParams.get('v')||'';
+        const parts=u.pathname.split('/').filter(Boolean);
+        const i=parts.findIndex(x=>['embed','shorts','live'].includes(x));
+        if(i>=0 && parts[i+1]) return parts[i+1];
+      }
+    }catch(e){}
+    return '';
+  }
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    const id=getVideoId(urlInput.value);
+    if(!id){
+      msg.textContent='Не вдалося розпізнати це YouTube-посилання.';
+      return;
+    }
+    frame.src='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0';
+    frame.hidden=false;
+    empty.style.display='none';
+    document.getElementById('trackTitle').textContent=titleInput.value.trim()||'YouTube трек';
+    document.getElementById('trackArtist').textContent=artistInput.value.trim()||'Виконавець не вказаний';
+    document.getElementById('trackRequester').textContent=requesterInput.value.trim()||'YevheniiPel';
+    msg.textContent='Трек завантажено. Якщо autoplay заблокований браузером — натисни ▶ у плеєрі.';
+  });
+})();
+</script>
+</body></html>
