@@ -28,6 +28,60 @@
 .music-msg{font-size:12px;color:#8794a5;grid-column:1/-1;min-height:16px}
 @media(max-width:800px){.music-section{padding:75px 7%}.music-shell{grid-template-columns:1fr}.music-form{grid-template-columns:1fr}.music-form .full{grid-column:auto}}
 @media(max-width:800px){nav{display:none}.hero{grid-template-columns:1fr;padding:65px 7%}.hero h1{letter-spacing:-4px}.about,.cards,.socials{grid-template-columns:1fr}.socialgrid{grid-template-columns:1fr}.day{grid-template-columns:55px 90px 1fr}.cta{display:block}.cta .btn{margin-top:20px}footer{display:block;line-height:2}}
+
+body{padding-bottom:92px}
+.music-admin{margin-top:28px;padding:20px;background:#090d13;border:1px solid #222b36;border-radius:15px}
+.music-admin summary{cursor:pointer;color:#9db8d4;font-weight:700}
+.music-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.music-form .full{grid-column:1/-1}
+.music-form input{width:100%;background:#07090d;color:#fff;border:1px solid #293341;border-radius:9px;padding:12px;font-size:14px;outline:none}
+.music-form input:focus{border-color:#58a8ff}
+.music-form button{border:0;border-radius:9px;padding:12px 16px;background:#58a8ff;color:#06101a;font-weight:800;cursor:pointer}
+.music-msg{font-size:12px;color:#8794a5;grid-column:1/-1;min-height:16px}
+
+.ym-queue{position:fixed;left:0;right:0;bottom:82px;z-index:90;background:#0a0d12;border-top:1px solid #293341;box-shadow:0 -22px 60px #000b;transform:translateY(calc(100% + 90px));transition:transform .28s ease;max-height:55vh;overflow:auto}
+.ym-queue.open{transform:translateY(0)}
+.ym-queue-inner{max-width:1100px;margin:0 auto;padding:22px 28px 26px}
+.ym-queue-head{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:14px}
+.ym-queue-head h3{margin:0;font-size:22px}
+.ym-close{width:42px;height:42px;border-radius:50%;border:1px solid #303846;background:#10151d;color:#fff;cursor:pointer;font-size:20px}
+.ym-list{display:grid;gap:7px}
+.ym-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px;border-radius:10px;border:1px solid transparent;background:#0d1118;cursor:pointer}
+.ym-item:hover,.ym-item.active{border-color:#354558;background:#111925}
+.ym-num{width:36px;height:36px;display:grid;place-items:center;color:#7f8b99;font-weight:800}
+.ym-item-title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ym-item-meta{font-size:12px;color:#808b99;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ym-item-who{font-size:12px;color:#8fcaff;white-space:nowrap}
+
+.ym-player{position:fixed;left:0;right:0;bottom:0;z-index:100;height:82px;background:#171a1f;border-top:1px solid #343943;display:grid;grid-template-columns:180px minmax(0,1fr) 180px;align-items:center;padding:0 22px;gap:18px;box-shadow:0 -8px 35px #0009}
+.ym-controls{display:flex;align-items:center;gap:10px}
+.ym-btn{width:42px;height:42px;border:none;background:transparent;color:#f5f7fa;cursor:pointer;border-radius:50%;font-size:22px}
+.ym-btn:hover{background:#ffffff12}
+.ym-play{font-size:28px}
+.ym-track{display:flex;align-items:center;gap:14px;min-width:0;cursor:pointer;border-radius:10px;padding:7px 10px}
+.ym-track:hover{background:#ffffff0a}
+.ym-thumb{width:50px;height:50px;border-radius:6px;background:linear-gradient(145deg,#204d78,#080b10);display:grid;place-items:center;flex:0 0 auto;overflow:hidden}
+.ym-thumb img{width:100%;height:100%;object-fit:cover}
+.ym-info{min-width:0}
+.ym-title{font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ym-sub{color:#a2a9b3;font-size:13px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ym-right{display:flex;justify-content:flex-end;align-items:center;gap:8px}
+.ym-queue-btn{border:1px solid #3b4350;background:#22262c;color:#f5f7fa;border-radius:999px;padding:10px 14px;cursor:pointer;font-weight:800}
+.ym-queue-btn:hover{border-color:#58a8ff;color:#8fcaff}
+#musicFrameHost{position:absolute;width:1px;height:1px;overflow:hidden;opacity:.01;pointer-events:none}
+
+@media(max-width:800px){
+ body{padding-bottom:76px}
+ .music-form{grid-template-columns:1fr}.music-form .full{grid-column:auto}
+ .ym-player{height:76px;grid-template-columns:auto minmax(0,1fr) auto;padding:0 10px;gap:8px}
+ .ym-controls .prev,.ym-controls .next{display:none}
+ .ym-thumb{width:44px;height:44px}
+ .ym-right .labeltxt{display:none}
+ .ym-queue{bottom:76px;max-height:60vh}
+ .ym-queue-inner{padding:18px 12px 22px}
+ .ym-item{grid-template-columns:36px minmax(0,1fr)}
+ .ym-item-who{grid-column:2;font-size:11px}
+}
 </style></head><body>
 <header class="nav"><a class="logo" href="#top">Yevhenii<span>Pel</span></a><nav><a href="#about">Про мене</a><a href="#content">Контент</a><a href="#music">Музика</a><a href="#schedule">Розклад</a><a href="#socials">Соцмережі</a></nav><a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a></header>
 <main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Женя.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
@@ -35,63 +89,59 @@
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Женя.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
 <section id="content" class="section"><div class="label">02 / КОНТЕНТ</div><h2>Що будемо <span>робити?</span></h2><div class="cards"><article class="card"><div class="icon">🎮</div><h3>Ігри</h3><p>Різні ігри, живий чат і моменти, які народжуються прямо на стрімі.</p></article><article class="card"><div class="icon">🎬</div><h3>Фільми & шоу</h3><p>Спільні перегляди та вечори з хорошим кіно і компанією.</p></article><article class="card"><div class="icon">💬</div><h3>Just Chatting</h3><p>Розмови, історії, новини та все, що хочеться обговорити.</p></article></div></section>
 
-<section id="music" class="music-section">
-  <div class="music-head">
-    <div>
-      <div class="label">03 / МУЗИКА</div>
-      <h2>На стрімі зараз <span>грає.</span></h2>
-    </div>
-    <p class="music-sub">Перша версія музичного блоку. Плеєр приймає звичайні YouTube та YouTube Music посилання. Далі під'єднаємо замовлення глядачів через Twitch і Firebase.</p>
-  </div>
-
-  <div class="music-shell">
-    <div class="yt-card">
-      <div class="player-wrap">
-        <div class="player-empty" id="musicEmpty">
-          <div><strong>🎵 Трек ще не вибрано</strong><span>В адмін-блоці нижче встав посилання з YouTube або YouTube Music.</span></div>
-        </div>
-        <iframe id="musicFrame" title="YouTube музичний плеєр" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen hidden></iframe>
-      </div>
-      <div class="yt-note">Відтворення відбувається через офіційний YouTube embed-плеєр.</div>
-    </div>
-
-    <div class="now-card">
-      <div class="now-badge"><i></i> NOW PLAYING</div>
-      <div class="track-title" id="trackTitle">Нічого не грає</div>
-      <div class="track-artist" id="trackArtist">—</div>
-      <div class="track-meta">
-        <div>Замовив: <b id="trackRequester">—</b></div>
-        <div>Джерело: <b>YouTube / YouTube Music</b></div>
-      </div>
-    </div>
-  </div>
-
-  <details class="music-admin">
-    <summary>⚙️ Тестове керування плеєром</summary>
-    <form class="music-form" id="musicForm">
-      <input class="full" id="musicUrl" type="url" placeholder="Посилання YouTube або YouTube Music" required>
-      <input id="musicTitle" type="text" placeholder="Назва треку">
-      <input id="musicArtist" type="text" placeholder="Виконавець">
-      <input id="musicRequester" type="text" placeholder="Хто замовив">
-      <button type="submit">▶ Увімкнути</button>
-      <div class="music-msg" id="musicMsg"></div>
-    </form>
-  </details>
-</section>
-<section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Вт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div></div></section>
+<section id="music" class="section"><div class="label">03 / МУЗИКА</div><h2>Музика <span>від глядачів.</span></h2><p style="color:#8995a5;line-height:1.8;max-width:760px">Плеєр тепер закріплений унизу сторінки, як у YouTube Music. Натисни на назву поточного треку або кнопку «Черга», щоб побачити замовлені пісні та хто їх замовив.</p><details class="music-admin"><summary>⚙️ Тестове керування музикою</summary><form class="music-form" id="musicForm"><input class="full" id="musicUrl" type="url" placeholder="Посилання YouTube або YouTube Music" required><input id="musicTitle" type="text" placeholder="Назва треку"><input id="musicArtist" type="text" placeholder="Виконавець"><input id="musicRequester" type="text" placeholder="Хто замовив"><button type="submit">＋ Додати в чергу</button><div class="music-msg" id="musicMsg"></div></form></details></section><section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Вт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div></div></section>
 <section id="socials" class="section socials"><div><div class="label">05 / СПІЛЬНОТА</div><h2>Будьмо<br><span>на зв'язку.</span></h2></div><div class="socialgrid"><a class="social" href="https://t.me/ZhenyaTwitch" target="_blank"><b>Telegram →</b><strong>📲</strong><small>@ZhenyaTwitch</small></a><a class="social" href="https://www.instagram.com/peleshko_yevgen/" target="_blank"><b>Instagram →</b><strong>◎</strong><small>@peleshko_yevgen</small></a><a class="social" href="https://www.twitch.tv/yevheniipel" target="_blank"><b>Twitch →</b><strong>◉</strong><small>YevheniiPel</small></a><a class="social" href="#top"><b>На головну ↑</b><strong>✦</strong><small>YevheniiPel</small></a></div></section>
 <section class="cta"><div><div class="label">YEVHENIIPEL</div><h2>Заходь на стрім.<br><span>Будемо знайомі.</span></h2></div><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Перейти на Twitch ↗</a></section></main>
 <footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer>
+
+<div id="musicFrameHost"></div>
+
+<section class="ym-queue" id="ymQueue" aria-label="Черга музики">
+  <div class="ym-queue-inner">
+    <div class="ym-queue-head">
+      <div>
+        <div class="label">МУЗИЧНА ЧЕРГА</div>
+        <h3>Замовлення глядачів</h3>
+      </div>
+      <button class="ym-close" id="ymClose" type="button" aria-label="Закрити чергу">×</button>
+    </div>
+    <div class="ym-list" id="ymList">
+      <div style="color:#778392;padding:20px 10px">Черга поки порожня.</div>
+    </div>
+  </div>
+</section>
+
+<div class="ym-player" id="ymPlayer">
+  <div class="ym-controls">
+    <button class="ym-btn prev" id="ymPrev" type="button" title="Попередня">⏮</button>
+    <button class="ym-btn ym-play" id="ymPlay" type="button" title="Відтворити / пауза">▶</button>
+    <button class="ym-btn next" id="ymNext" type="button" title="Наступна">⏭</button>
+  </div>
+
+  <div class="ym-track" id="ymTrack" role="button" tabindex="0" aria-label="Відкрити чергу">
+    <div class="ym-thumb" id="ymThumb">♫</div>
+    <div class="ym-info">
+      <div class="ym-title" id="ymTitle">Нічого не грає</div>
+      <div class="ym-sub"><span id="ymArtist">—</span> · замовив <span id="ymRequester">—</span></div>
+    </div>
+  </div>
+
+  <div class="ym-right">
+    <button class="ym-queue-btn" id="ymQueueBtn" type="button">☰ <span class="labeltxt">Черга</span></button>
+  </div>
+</div>
+
 <script>
 (function(){
   const form=document.getElementById('musicForm');
-  const urlInput=document.getElementById('musicUrl');
-  const titleInput=document.getElementById('musicTitle');
-  const artistInput=document.getElementById('musicArtist');
-  const requesterInput=document.getElementById('musicRequester');
-  const frame=document.getElementById('musicFrame');
-  const empty=document.getElementById('musicEmpty');
   const msg=document.getElementById('musicMsg');
+  const queueBox=document.getElementById('ymQueue');
+  const list=document.getElementById('ymList');
+  const playBtn=document.getElementById('ymPlay');
+  let queue=[];
+  let current=-1;
+  let player=null;
+  let apiReady=false;
 
   function getVideoId(raw){
     try{
@@ -102,27 +152,126 @@
         if(u.pathname==='/watch') return u.searchParams.get('v')||'';
         const parts=u.pathname.split('/').filter(Boolean);
         const i=parts.findIndex(x=>['embed','shorts','live'].includes(x));
-        if(i>=0 && parts[i+1]) return parts[i+1];
+        if(i>=0&&parts[i+1]) return parts[i+1];
       }
     }catch(e){}
     return '';
   }
 
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    const id=getVideoId(urlInput.value);
-    if(!id){
-      msg.textContent='Не вдалося розпізнати це YouTube-посилання.';
+  function thumb(id){return 'https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/mqdefault.jpg';}
+
+  function updateBar(){
+    const t=queue[current];
+    document.getElementById('ymTitle').textContent=t?.title||'Нічого не грає';
+    document.getElementById('ymArtist').textContent=t?.artist||'—';
+    document.getElementById('ymRequester').textContent=t?.requester||'—';
+    const b=document.getElementById('ymThumb');
+    b.innerHTML=t?'<img src="'+thumb(t.videoId)+'" alt="">':'♫';
+    renderQueue();
+  }
+
+  function renderQueue(){
+    if(!queue.length){
+      list.innerHTML='<div style="color:#778392;padding:20px 10px">Черга поки порожня.</div>';
       return;
     }
-    frame.src='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0';
-    frame.hidden=false;
-    empty.style.display='none';
-    document.getElementById('trackTitle').textContent=titleInput.value.trim()||'YouTube трек';
-    document.getElementById('trackArtist').textContent=artistInput.value.trim()||'Виконавець не вказаний';
-    document.getElementById('trackRequester').textContent=requesterInput.value.trim()||'YevheniiPel';
-    msg.textContent='Трек завантажено. Якщо autoplay заблокований браузером — натисни ▶ у плеєрі.';
+    list.innerHTML=queue.map((t,i)=>`
+      <div class="ym-item ${i===current?'active':''}" data-index="${i}">
+        <div class="ym-num">${i===current?'▶':i+1}</div>
+        <div>
+          <div class="ym-item-title">${escapeHtml(t.title||'YouTube трек')}</div>
+          <div class="ym-item-meta">${escapeHtml(t.artist||'Виконавець не вказаний')}</div>
+        </div>
+        <div class="ym-item-who">Замовив: ${escapeHtml(t.requester||'YevheniiPel')}</div>
+      </div>
+    `).join('');
+    list.querySelectorAll('.ym-item').forEach(el=>el.addEventListener('click',()=>playIndex(Number(el.dataset.index))));
+  }
+
+  function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+
+  function ensureApi(){
+    if(window.YT&&window.YT.Player){apiReady=true;return;}
+    if(document.getElementById('youtubeApi')) return;
+    const s=document.createElement('script');
+    s.id='youtubeApi';
+    s.src='https://www.youtube.com/iframe_api';
+    document.head.appendChild(s);
+  }
+
+  window.onYouTubeIframeAPIReady=function(){
+    apiReady=true;
+    if(current>=0) createOrLoad(queue[current].videoId);
+  };
+
+  function createOrLoad(videoId){
+    if(!apiReady){ensureApi();return;}
+    if(!player){
+      const div=document.createElement('div');
+      div.id='hiddenYT';
+      document.getElementById('musicFrameHost').appendChild(div);
+      player=new YT.Player('hiddenYT',{
+        height:'1',width:'1',videoId,
+        playerVars:{autoplay:1,playsinline:1,rel:0},
+        events:{
+          onReady:e=>{e.target.playVideo();playBtn.textContent='⏸';},
+          onStateChange:e=>{
+            if(e.data===YT.PlayerState.PLAYING) playBtn.textContent='⏸';
+            if(e.data===YT.PlayerState.PAUSED) playBtn.textContent='▶';
+            if(e.data===YT.PlayerState.ENDED) nextTrack();
+          }
+        }
+      });
+    }else{
+      player.loadVideoById(videoId);
+      playBtn.textContent='⏸';
+    }
+  }
+
+  function playIndex(i){
+    if(i<0||i>=queue.length)return;
+    current=i;
+    updateBar();
+    createOrLoad(queue[current].videoId);
+  }
+
+  function nextTrack(){if(!queue.length)return;playIndex((current+1)%queue.length);}
+  function prevTrack(){if(!queue.length)return;playIndex((current-1+queue.length)%queue.length);}
+
+  function toggleQueue(){queueBox.classList.toggle('open');}
+  document.getElementById('ymQueueBtn').addEventListener('click',toggleQueue);
+  document.getElementById('ymTrack').addEventListener('click',toggleQueue);
+  document.getElementById('ymTrack').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleQueue();}});
+  document.getElementById('ymClose').addEventListener('click',()=>queueBox.classList.remove('open'));
+  document.getElementById('ymNext').addEventListener('click',nextTrack);
+  document.getElementById('ymPrev').addEventListener('click',prevTrack);
+  playBtn.addEventListener('click',()=>{
+    if(current<0&&queue.length){playIndex(0);return;}
+    if(!player)return;
+    const state=player.getPlayerState();
+    if(state===YT.PlayerState.PLAYING)player.pauseVideo();else player.playVideo();
   });
+
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const url=document.getElementById('musicUrl').value;
+    const id=getVideoId(url);
+    if(!id){msg.textContent='Не вдалося розпізнати YouTube-посилання.';return;}
+    const item={
+      videoId:id,
+      title:document.getElementById('musicTitle').value.trim()||'YouTube трек',
+      artist:document.getElementById('musicArtist').value.trim()||'Виконавець не вказаний',
+      requester:document.getElementById('musicRequester').value.trim()||'YevheniiPel'
+    };
+    queue.push(item);
+    renderQueue();
+    if(current<0)playIndex(0);
+    form.reset();
+    msg.textContent='Додано в чергу. Натисни на трек унизу, щоб її відкрити.';
+  });
+
+  ensureApi();
+  updateBar();
 })();
 </script>
 </body></html>
