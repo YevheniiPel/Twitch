@@ -80,10 +80,26 @@ body{padding-bottom:92px}
  .ym-queue{bottom:76px;max-height:60vh}
  .ym-queue-inner{padding:18px 12px 22px}
  .ym-item{grid-template-columns:36px minmax(0,1fr)}
- .ym-item-who{grid-column:2;font-size:11px}
+ .ym-item-who{grid-column:2;font-size:11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 }
+
+.nav-actions{display:flex;align-items:center;gap:8px}
+.admin-auth-btn{background:transparent;cursor:pointer}
+.admin-only{display:none!important}
+body.is-admin .admin-only{display:inline-flex!important}
+.ym-delete{border:1px solid #5a2930;background:#291317;color:#ff8c98;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:12px;font-weight:800}
+.ym-delete:hover{border-color:#ff6677}
+.auth-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:150;align-items:center;justify-content:center;padding:20px}
+.auth-modal.open{display:flex}
+.auth-card{width:min(420px,100%);background:#0d121a;border:1px solid #293341;border-radius:18px;padding:24px}
+.auth-card h3{margin:0 0 18px}
+.auth-card label{display:block;color:#8b97a6;font-size:12px;font-weight:800;margin:12px 0 6px}
+.auth-card input{width:100%;background:#07090d;border:1px solid #293341;color:#fff;border-radius:9px;padding:12px;font-size:14px}
+.auth-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.auth-error{color:#ff7d8a;font-size:13px;min-height:18px;margin-top:10px}
+@media(max-width:800px){.nav-actions .admin-auth-btn{display:none}}
 </style></head><body>
-<header class="nav"><a class="logo" href="#top">Yevhenii<span>Pel</span></a><nav><a href="#about">Про мене</a><a href="#content">Контент</a><a href="#music">Музика</a><a href="#schedule">Розклад</a><a href="#socials">Соцмережі</a></nav><a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a></header>
+<header class="nav"><a class="logo" href="#top">Yevhenii<span>Pel</span></a><nav><a href="#about">Про мене</a><a href="#content">Контент</a><a href="#music">Музика</a><a href="#schedule">Розклад</a><a href="calendar.html">Календар</a><a href="#socials">Соцмережі</a></nav><div class="nav-actions"><button id="adminLoginBtn" class="btn outline admin-auth-btn" type="button">Адмін</button><button id="adminLogoutBtn" class="btn outline admin-auth-btn" type="button" hidden>Вийти</button><a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a></div></header>
 <main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Женя.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
 <section class="stats"><div><b>01</b><small>Стрімер</small></div><div><b>∞</b><small>Ідей</small></div><div><b>100%</b><small>Живого контенту</small></div></section>
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Женя.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
@@ -99,6 +115,24 @@ body{padding-bottom:92px}
 <section id="socials" class="section socials"><div><div class="label">05 / СПІЛЬНОТА</div><h2>Будьмо<br><span>на зв'язку.</span></h2></div><div class="socialgrid"><a class="social" href="https://t.me/ZhenyaTwitch" target="_blank"><b>Telegram →</b><strong>📲</strong><small>@ZhenyaTwitch</small></a><a class="social" href="https://www.instagram.com/peleshko_yevgen/" target="_blank"><b>Instagram →</b><strong>◎</strong><small>@peleshko_yevgen</small></a><a class="social" href="https://www.twitch.tv/yevheniipel" target="_blank"><b>Twitch →</b><strong>◉</strong><small>YevheniiPel</small></a><a class="social" href="#top"><b>На головну ↑</b><strong>✦</strong><small>YevheniiPel</small></a></div></section>
 <section class="cta"><div><div class="label">YEVHENIIPEL</div><h2>Заходь на стрім.<br><span>Будемо знайомі.</span></h2></div><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Перейти на Twitch ↗</a></section></main>
 <footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer>
+
+
+<div class="auth-modal" id="adminModal" aria-hidden="true">
+  <div class="auth-card">
+    <h3>Вхід адміністратора</h3>
+    <form id="adminLoginForm">
+      <label for="adminEmail">Email</label>
+      <input id="adminEmail" type="email" required autocomplete="username">
+      <label for="adminPassword">Пароль</label>
+      <input id="adminPassword" type="password" required autocomplete="current-password">
+      <div class="auth-error" id="adminError"></div>
+      <div class="auth-actions">
+        <button class="btn outline" id="adminCancelBtn" type="button">Скасувати</button>
+        <button class="btn blue" type="submit">Увійти</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <div id="musicFrameHost"></div>
 
@@ -140,7 +174,8 @@ body{padding-bottom:92px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",
@@ -154,7 +189,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
+const ADMIN_UID = "DKOWrhsxWLUGiJyy6kyYjLVsZB22";
 const musicRef = ref(db, "musicQueue");
+let isAdmin = false;
 
 const queueBox = document.getElementById("ymQueue");
 const list = document.getElementById("ymList");
@@ -223,15 +261,38 @@ function renderQueue() {
             : esc(t.artist || "Виконавець не вказаний")}
         </div>
       </div>
-      <div class="ym-item-who">Замовив: ${esc(t.requester || "Невідомий")}</div>
+      <div class="ym-item-who">
+        <span>Замовив: ${esc(t.requester || "Невідомий")}</span>
+        ${isAdmin ? `<button class="ym-delete" type="button" data-delete-id="${esc(t.id)}">✕ Видалити</button>` : ""}
+      </div>
     </div>
   `).join("");
 
   list.querySelectorAll(".ym-item").forEach(el => {
-    el.addEventListener("click", () => {
+    el.addEventListener("click", e => {
+      if (e.target.closest(".ym-delete")) return;
       const i = Number(el.dataset.index);
       if (queue[i]?.status === "invalid" || !queue[i]?.videoId) return;
       playIndex(i);
+    });
+  });
+
+  list.querySelectorAll(".ym-delete").forEach(btn => {
+    btn.addEventListener("click", async e => {
+      e.stopPropagation();
+      if (!isAdmin) return;
+
+      const id = btn.dataset.deleteId;
+      if (!id) return;
+
+      if (!confirm("Видалити цю пісню з плейлиста?")) return;
+
+      try {
+        await remove(ref(db, `musicQueue/${id}`));
+      } catch (err) {
+        alert("Не вдалося видалити пісню.");
+        console.error(err);
+      }
     });
   });
 }
@@ -391,6 +452,68 @@ playBtn.addEventListener("click", () => {
     player.playVideo();
   }
 });
+
+
+const adminModal = document.getElementById("adminModal");
+const adminLoginBtn = document.getElementById("adminLoginBtn");
+const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+const adminCancelBtn = document.getElementById("adminCancelBtn");
+const adminLoginForm = document.getElementById("adminLoginForm");
+const adminError = document.getElementById("adminError");
+
+function openAdminModal() {
+  adminError.textContent = "";
+  adminModal.classList.add("open");
+  adminModal.setAttribute("aria-hidden", "false");
+}
+
+function closeAdminModal() {
+  adminModal.classList.remove("open");
+  adminModal.setAttribute("aria-hidden", "true");
+  adminLoginForm.reset();
+  adminError.textContent = "";
+}
+
+adminLoginBtn.addEventListener("click", openAdminModal);
+adminCancelBtn.addEventListener("click", closeAdminModal);
+adminLogoutBtn.addEventListener("click", () => signOut(auth));
+
+adminModal.addEventListener("click", e => {
+  if (e.target === adminModal) closeAdminModal();
+});
+
+adminLoginForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  adminError.textContent = "";
+
+  try {
+    const cred = await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("adminEmail").value,
+      document.getElementById("adminPassword").value
+    );
+
+    if (cred.user.uid !== ADMIN_UID) {
+      await signOut(auth);
+      throw new Error("not-admin");
+    }
+
+    closeAdminModal();
+  } catch (err) {
+    adminError.textContent = "Невірний email або пароль.";
+  }
+});
+
+onAuthStateChanged(auth, user => {
+  isAdmin = !!user && user.uid === ADMIN_UID;
+
+  document.body.classList.toggle("is-admin", isAdmin);
+  adminLoginBtn.hidden = isAdmin;
+  adminLogoutBtn.hidden = !isAdmin;
+
+  renderQueue();
+});
+
 
 onValue(musicRef, snapshot => {
   const data = snapshot.val() || {};
