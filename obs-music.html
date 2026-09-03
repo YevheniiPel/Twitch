@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YevheniiPel — OBS Music Widget</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden;font-family:Arial,sans-serif;color:#fff}
+.wrap{position:absolute;left:18px;bottom:18px;width:min(620px,calc(100vw - 36px));height:92px;display:grid;grid-template-columns:76px 1fr;gap:14px;align-items:center;padding:9px 18px 9px 9px;background:linear-gradient(90deg,rgba(2,8,16,.95),rgba(5,16,28,.93));border:1px solid rgba(19,184,255,.65);clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);box-shadow:0 0 28px rgba(19,184,255,.18)}
+.wrap:after{content:"";position:absolute;right:0;top:0;width:90px;height:2px;background:#ff8a18;box-shadow:0 0 12px #ff8a18}
+.cover{width:72px;height:72px;overflow:hidden;background:#06101a;border:1px solid rgba(19,184,255,.42);display:grid;place-items:center;font-size:28px}.cover img{width:100%;height:100%;object-fit:cover}
+.info{min-width:0}.tag{font-size:10px;letter-spacing:1.7px;color:#13b8ff;font-weight:900;margin-bottom:7px}.title{font-size:21px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sub{margin-top:7px;color:#9fb0c2;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.orange{color:#ff9a2f}
+#yt{position:absolute;width:1px;height:1px;opacity:.001;pointer-events:none}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div id="yt"></div>
+<div class="wrap" id="widget">
+  <div class="cover" id="cover">♫</div>
+  <div class="info">
+    <div class="tag">YEVHENIIPEL · ЗАРАЗ ГРАЄ</div>
+    <div class="title" id="title">Очікуємо музику...</div>
+    <div class="sub"><span id="artist">—</span> · замовив <span class="orange" id="requester">—</span></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",
+  authDomain:"yevheniipel.firebaseapp.com",
+  databaseURL:"https://yevheniipel-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId:"yevheniipel",
+  storageBucket:"yevheniipel.firebasestorage.app",
+  messagingSenderId:"1062789800045",
+  appId:"1:1062789800045:web:e72c6a2826b699fd579f64"
+});
+const db=getDatabase(app);
+
+let queue={}, state={}, player=null, apiReady=false, currentVideo="";
+const $=id=>document.getElementById(id);
+
+function expectedPosition(s){
+  let p=Number(s.position||0);
+  if(s.isPlaying&&s.startedAt)p+=Math.max(0,Date.now()-Number(s.startedAt))/1000;
+  return p;
+}
+function render(){
+  const t=queue[state.currentId];
+  if(!t){
+    $("title").textContent="Очікуємо музику...";
+    $("artist").textContent="—";$("requester").textContent="—";$("cover").innerHTML="♫";
+    if(player)player.pauseVideo();
+    return;
+  }
+  $("title").textContent=t.title||"YouTube трек";
+  $("artist").textContent=t.artist||"—";
+  $("requester").textContent=t.requester||"—";
+  const img=t.thumbnailUrl||(t.videoId?`https://i.ytimg.com/vi/${encodeURIComponent(t.videoId)}/mqdefault.jpg`:"");
+  $("cover").innerHTML=img?`<img src="${img}" alt="">`:"♫";
+  sync();
+}
+function sync(){
+  const t=queue[state.currentId];
+  if(!apiReady||!t?.videoId)return;
+  const pos=expectedPosition(state);
+  if(!player){
+    player=new YT.Player("yt",{height:"1",width:"1",videoId:t.videoId,playerVars:{autoplay:1,playsinline:1,rel:0},events:{onReady:e=>{e.target.seekTo(pos,true);state.isPlaying?e.target.playVideo():e.target.pauseVideo();}}});
+    currentVideo=t.videoId;
+    return;
+  }
+  if(currentVideo!==t.videoId){
+    currentVideo=t.videoId;
+    state.isPlaying?player.loadVideoById({videoId:t.videoId,startSeconds:pos}):player.cueVideoById({videoId:t.videoId,startSeconds:pos});
+  }else{
+    const actual=Number(player.getCurrentTime?.()||0);
+    if(Math.abs(actual-pos)>1.8)player.seekTo(pos,true);
+    state.isPlaying?player.playVideo():player.pauseVideo();
+  }
+}
+window.onYouTubeIframeAPIReady=()=>{apiReady=true;sync()};
+const s=document.createElement("script");s.src="https://www.youtube.com/iframe_api";document.head.appendChild(s);
+
+onValue(ref(db,"musicQueue"),snap=>{queue=snap.val()||{};render()});
+onValue(ref(db,"musicState"),snap=>{state=snap.val()||{};render()});
+setInterval(sync,4000);
+</script>
+</body>
+</html>

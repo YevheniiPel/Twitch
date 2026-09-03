@@ -221,6 +221,27 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 .stats div{border-color:rgba(19,184,255,.13)!important}
 .stats b{color:#fff}
 
+
+/* ===== ADMIN + SYNCHRONIZED MUSIC ===== */
+.admin-music-panel{display:none;margin-top:22px;padding:20px;border:1px solid rgba(19,184,255,.3);background:linear-gradient(180deg,#07111d,#040a12)}
+body.is-admin .admin-music-panel{display:block}
+.admin-music-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.admin-music-grid .full{grid-column:1/-1}
+.admin-music-grid input{width:100%;padding:12px;border:1px solid rgba(19,184,255,.3);background:#020810;color:#fff}
+.admin-music-grid button{cursor:pointer}
+.admin-note{font-size:12px;color:#7f93a8;line-height:1.6;margin-top:10px}
+.ym-admin-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ym-order,.ym-delete{border:1px solid rgba(19,184,255,.32);background:#07111d;color:#dff4ff;padding:7px 9px;cursor:pointer;font-weight:800}
+.ym-order:hover{border-color:#13b8ff}
+.viewer-sync-note{font-size:12px;color:#8ea2b8;margin-top:8px}
+.viewer-unlock{display:none;position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:120;background:#06111d;border:1px solid rgba(19,184,255,.5);padding:12px 16px;color:#fff;cursor:pointer;box-shadow:0 0 25px rgba(19,184,255,.18)}
+body:not(.is-admin) .viewer-unlock.show{display:block}
+body:not(.is-admin) .ym-controls{visibility:hidden;pointer-events:none}
+body:not(.is-admin) .ym-item{cursor:default}
+.sync-live{display:inline-flex;align-items:center;gap:7px;color:#86dcff;font-size:12px;font-weight:800}
+.sync-live:before{content:"";width:7px;height:7px;border-radius:50%;background:#13b8ff;box-shadow:0 0 12px #13b8ff}
+@media(max-width:800px){.admin-music-grid{grid-template-columns:1fr}.admin-music-grid .full{grid-column:auto}}
+
 </style></head><body>
 <header class="nav"><a class="logo" href="#top">Yevhenii<span>Pel</span></a><nav><a href="#about">Про мене</a><a href="#content">Контент</a><a href="#music">Музика</a><a href="#schedule">Розклад</a><a href="calendar.html">Календар</a><a href="#socials">Соцмережі</a></nav><div class="nav-actions"><button id="adminLoginBtn" class="btn outline admin-auth-btn" type="button">Адмін</button><button id="adminLogoutBtn" class="btn outline admin-auth-btn" type="button" hidden>Вийти</button><a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a></div></header>
 <main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Євгеній.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
@@ -228,13 +249,39 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Євгеній.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
 <section id="content" class="section"><div class="label">02 / КОНТЕНТ</div><h2>Що будемо <span>робити?</span></h2><div class="cards"><a class="card card-link" href="https://steamcommunity.com/id/ShineWarYouTube/" target="_blank" rel="noopener noreferrer"><div class="icon">🎮</div><h3>Ігри</h3><p>Різні ігри, живий чат і моменти, які народжуються прямо на стрімі.</p><div class="card-go">Мій Steam →</div></a><a class="card card-link" href="calendar.html"><div class="icon">🎬</div><h3>Фільми & шоу</h3><p>Спільні перегляди та вечори з хорошим кіно і компанією.</p><div class="card-go">Календар кіновечорів →</div></a><a class="card card-link" href="https://t.me/ZhenyaTwitch" target="_blank" rel="noopener noreferrer"><div class="icon">💬</div><h3>Just Chatting</h3><p>Розмови, історії, новини та все, що хочеться обговорити.</p><div class="card-go">Telegram →</div></a></div></section>
 
-<section id="music" class="section"><div class="label">03 / МУЗИКА</div><h2>Музика <span>від глядачів.</span></h2><p style="color:#8995a5;line-height:1.8;max-width:760px">Плеєр тепер закріплений унизу сторінки, як у YouTube Music. Натисни на назву поточного треку або кнопку «Черга», щоб побачити замовлені пісні та хто їх замовив.</p><div class="music-admin">
-      <strong style="color:#dce7f2">🎁 Замовлення через Twitch</strong>
-      <div style="color:#8794a5;font-size:13px;line-height:1.6;margin-top:8px">
-        Глядач використовує нагороду <b style="color:#fff">«Замовити пісню 🎵»</b>
-        та вставляє посилання YouTube або YouTube Music. Пісня автоматично з’явиться в черзі нижнього плеєра.
-      </div>
-    </div></section><section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Вт</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Сб</span><b>10:00</b><small>Стрім</small></div><div class="day"><span>Нд</span><b>—</b><small>Вихідний</small></div></div></section>
+<section id="music" class="section">
+  <div class="label">03 / МУЗИКА</div>
+  <h2>Музика <span>від глядачів.</span></h2>
+  <p style="color:#8995a5;line-height:1.8;max-width:760px">
+    Усі бачать одну спільну чергу. Коли Євгеній запускає або ставить трек на паузу,
+    сайт синхронізує цей стан для всіх слухачів.
+  </p>
+  <div class="sync-live">Синхронізований плеєр</div>
+  <div class="viewer-sync-note">Глядачі не можуть керувати відтворенням або змінювати чергу.</div>
+
+  <div class="music-admin">
+    <strong style="color:#dce7f2">🎁 Замовлення через Twitch</strong>
+    <div style="color:#8794a5;font-size:13px;line-height:1.6;margin-top:8px">
+      Глядач використовує нагороду <b style="color:#fff">«Замовити пісню 🎵»</b>
+      та вставляє посилання YouTube або YouTube Music.
+    </div>
+  </div>
+
+  <div class="admin-music-panel">
+    <div class="label">АДМІН-ПАНЕЛЬ МУЗИКИ</div>
+    <h3 style="margin:10px 0 14px">Додати трек вручну</h3>
+    <form id="adminAddTrackForm" class="admin-music-grid">
+      <input class="full" id="adminTrackUrl" type="url" placeholder="YouTube / YouTube Music посилання" required>
+      <input id="adminTrackTitle" type="text" placeholder="Назва (необов'язково)">
+      <input id="adminTrackRequester" type="text" value="YevheniiPel" placeholder="Хто додав">
+      <button class="btn blue full" type="submit">＋ Додати в чергу</button>
+      <div id="adminTrackMsg" class="admin-note full"></div>
+    </form>
+    <div class="admin-note">
+      Порядок треків змінюється кнопками ↑ і ↓ у черзі. Керування Play / Pause / Next / Prev доступне тільки після входу адміністратора.
+    </div>
+  </div>
+</section><section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Вт</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Сб</span><b>10:00</b><small>Стрім</small></div><div class="day"><span>Нд</span><b>—</b><small>Вихідний</small></div></div></section>
 <section id="socials" class="section socials"><div><div class="label">05 / СПІЛЬНОТА</div><h2>Будьмо<br><span>на зв'язку.</span></h2></div><div class="socialgrid"><a class="social" href="https://t.me/ZhenyaTwitch" target="_blank"><b>Telegram →</b><strong>📲</strong><small>@ZhenyaTwitch</small></a><a class="social" href="https://www.instagram.com/peleshko_yevgen/" target="_blank"><b>Instagram →</b><strong>◎</strong><small>@peleshko_yevgen</small></a><a class="social" href="https://www.twitch.tv/yevheniipel" target="_blank"><b>Twitch →</b><strong>◉</strong><small>YevheniiPel</small></a><a class="social" href="#top"><b>На головну ↑</b><strong>✦</strong><small>YevheniiPel</small></a></div></section>
 <section class="cta"><div><div class="label">YEVHENIIPEL</div><h2>Заходь на стрім.<br><span>Будемо знайомі.</span></h2></div><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Перейти на Twitch ↗</a></section></main>
 <footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer>
@@ -274,6 +321,7 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
   </div>
 </section>
 
+<button id="viewerUnlock" class="viewer-unlock" type="button">🔊 Увімкнути звук трансляції</button>
 <div class="ym-player" id="ymPlayer">
   <div class="ym-controls">
     <button class="ym-btn prev" id="ymPrev" type="button" title="Попередня">⏮</button>
@@ -297,8 +345,12 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+import {
+  getDatabase, ref, onValue, remove, set, update, push, serverTimestamp, get
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",
@@ -310,143 +362,177 @@ const firebaseConfig = {
   appId: "1:1062789800045:web:e72c6a2826b699fd579f64"
 };
 
+const ADMIN_UID = "DKOWrhsxWLUGiJyy6kyYjLVsZB22";
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
-const ADMIN_UID = "DKOWrhsxWLUGiJyy6kyYjLVsZB22";
-const musicRef = ref(db, "musicQueue");
-let isAdmin = false;
 
-const queueBox = document.getElementById("ymQueue");
-const list = document.getElementById("ymList");
-const playBtn = document.getElementById("ymPlay");
+const musicRef = ref(db, "musicQueue");
+const stateRef = ref(db, "musicState");
 
 let queue = [];
 let current = -1;
 let player = null;
 let apiReady = false;
+let isAdmin = false;
+let audioUnlocked = false;
+let remoteState = {};
+let suppressAdminWrite = false;
+
+const queueBox = document.getElementById("ymQueue");
+const list = document.getElementById("ymList");
+const playBtn = document.getElementById("ymPlay");
+const unlockBtn = document.getElementById("viewerUnlock");
 
 function esc(s = "") {
   return String(s).replace(/[&<>'"]/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "'": "&#39;",
-    '"': "&quot;"
+    "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
   }[c]));
 }
 
 function thumb(track) {
-  if (track.thumbnailUrl) return track.thumbnailUrl;
-  if (track.videoId) {
-    return `https://i.ytimg.com/vi/${encodeURIComponent(track.videoId)}/mqdefault.jpg`;
-  }
+  if (track?.thumbnailUrl) return track.thumbnailUrl;
+  return track?.videoId ? `https://i.ytimg.com/vi/${encodeURIComponent(track.videoId)}/mqdefault.jpg` : "";
+}
+
+function getYoutubeId(input) {
+  try {
+    const u = new URL((input || "").trim());
+    const host = u.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") return u.pathname.split("/").filter(Boolean)[0] || "";
+    if (["youtube.com","m.youtube.com","music.youtube.com"].includes(host)) {
+      if (u.pathname === "/watch") return u.searchParams.get("v") || "";
+      const p = u.pathname.split("/").filter(Boolean);
+      const i = p.findIndex(x => ["embed","shorts","live"].includes(x));
+      if (i >= 0 && p[i+1]) return p[i+1];
+    }
+  } catch (_) {}
   return "";
+}
+
+function queueSort(a,b) {
+  const ao = Number.isFinite(Number(a.order)) ? Number(a.order) : 999999999;
+  const bo = Number.isFinite(Number(b.order)) ? Number(b.order) : 999999999;
+  if (ao !== bo) return ao - bo;
+  return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
 }
 
 function updateBar() {
   const t = queue[current];
-
-  document.getElementById("ymTitle").textContent =
-    t?.title || "Нічого не грає";
-
-  document.getElementById("ymArtist").textContent =
-    t?.artist || "—";
-
-  document.getElementById("ymRequester").textContent =
-    t?.requester || "—";
-
+  document.getElementById("ymTitle").textContent = t?.title || "Нічого не грає";
+  document.getElementById("ymArtist").textContent = t?.artist || "—";
+  document.getElementById("ymRequester").textContent = t?.requester || "—";
   const box = document.getElementById("ymThumb");
-  const image = t ? thumb(t) : "";
-
-  box.innerHTML = image
-    ? `<img src="${esc(image)}" alt="">`
-    : "♫";
-
+  const image = thumb(t);
+  box.innerHTML = image ? `<img src="${esc(image)}" alt="">` : "♫";
   renderQueue();
 }
 
 function renderQueue() {
   if (!queue.length) {
-    list.innerHTML =
-      '<div style="color:#778392;padding:20px 10px">Черга поки порожня. Замовлення з Twitch з’являться тут автоматично.</div>';
+    list.innerHTML = '<div style="color:#778392;padding:20px 10px">Черга поки порожня.</div>';
     return;
   }
 
-  list.innerHTML = queue.map((t, i) => `
-    <div class="ym-item ${i === current ? "active" : ""} ${t.status === "invalid" ? "invalid" : ""}" data-index="${i}">
-      <div class="ym-num">${i === current ? "▶" : i + 1}</div>
+  list.innerHTML = queue.map((t,i) => `
+    <div class="ym-item ${i===current ? "active" : ""} ${t.status==="invalid" ? "invalid" : ""}" data-index="${i}">
+      <div class="ym-num">${i===current ? "▶" : i+1}</div>
       <div>
         <div class="ym-item-title">${esc(t.title || "YouTube трек")}</div>
-        <div class="ym-item-meta">
-          ${t.status === "invalid"
-            ? "⚠️ Неправильне YouTube-посилання"
-            : esc(t.artist || "Виконавець не вказаний")}
-        </div>
+        <div class="ym-item-meta">${t.status==="invalid" ? "⚠️ Неправильне YouTube-посилання" : esc(t.artist || "Виконавець не вказаний")}</div>
       </div>
       <div class="ym-item-who">
         <span>Замовив: ${esc(t.requester || "Невідомий")}</span>
-        ${isAdmin ? `<button class="ym-delete" type="button" data-delete-id="${esc(t.id)}">✕ Видалити</button>` : ""}
+        ${isAdmin ? `
+          <span class="ym-admin-actions">
+            <button class="ym-order" data-move="-1" data-id="${esc(t.id)}" type="button" title="Вище">↑</button>
+            <button class="ym-order" data-move="1" data-id="${esc(t.id)}" type="button" title="Нижче">↓</button>
+            <button class="ym-delete" data-delete-id="${esc(t.id)}" type="button">✕</button>
+          </span>` : ""}
       </div>
     </div>
   `).join("");
 
-  list.querySelectorAll(".ym-item").forEach(el => {
-    el.addEventListener("click", e => {
-      if (e.target.closest(".ym-delete")) return;
-      const i = Number(el.dataset.index);
-      if (queue[i]?.status === "invalid" || !queue[i]?.videoId) return;
-      playIndex(i);
+  if (isAdmin) {
+    list.querySelectorAll(".ym-item").forEach(el => {
+      el.addEventListener("click", e => {
+        if (e.target.closest("button")) return;
+        const i = Number(el.dataset.index);
+        if (queue[i]?.videoId && queue[i]?.status !== "invalid") adminPlayIndex(i);
+      });
     });
-  });
 
-  list.querySelectorAll(".ym-delete").forEach(btn => {
-    btn.addEventListener("click", async e => {
-      e.stopPropagation();
-      if (!isAdmin) return;
-
-      const id = btn.dataset.deleteId;
-      if (!id) return;
-
-      if (!confirm("Видалити цю пісню з плейлиста?")) return;
-
-      try {
+    list.querySelectorAll(".ym-delete").forEach(btn => {
+      btn.addEventListener("click", async e => {
+        e.stopPropagation();
+        const id = btn.dataset.deleteId;
+        if (!id || !confirm("Видалити цю пісню з черги?")) return;
+        if (queue[current]?.id === id) {
+          await set(stateRef, { isPlaying:false, currentId:"", position:0, updatedAt:serverTimestamp() });
+        }
         await remove(ref(db, `musicQueue/${id}`));
-      } catch (err) {
-        alert("Не вдалося видалити пісню.");
-        console.error(err);
-      }
+      });
     });
+
+    list.querySelectorAll(".ym-order").forEach(btn => {
+      btn.addEventListener("click", async e => {
+        e.stopPropagation();
+        await moveTrack(btn.dataset.id, Number(btn.dataset.move));
+      });
+    });
+  }
+}
+
+async function normalizeOrders() {
+  if (!isAdmin || !queue.length) return;
+  const updates = {};
+  let changed = false;
+  queue.forEach((t,i) => {
+    const wanted = (i+1)*100;
+    if (Number(t.order) !== wanted) {
+      updates[`musicQueue/${t.id}/order`] = wanted;
+      changed = true;
+    }
+  });
+  if (changed) await update(ref(db), updates);
+}
+
+async function moveTrack(id, delta) {
+  if (!isAdmin) return;
+  const i = queue.findIndex(t => t.id === id);
+  const j = i + delta;
+  if (i < 0 || j < 0 || j >= queue.length) return;
+
+  const a = queue[i], b = queue[j];
+  const aOrder = Number(a.order) || (i+1)*100;
+  const bOrder = Number(b.order) || (j+1)*100;
+
+  await update(ref(db), {
+    [`musicQueue/${a.id}/order`]: bOrder,
+    [`musicQueue/${b.id}/order`]: aOrder
   });
 }
 
 function ensureApi() {
-  if (window.YT && window.YT.Player) {
-    apiReady = true;
-    return;
-  }
-
+  if (window.YT?.Player) { apiReady = true; return; }
   if (document.getElementById("youtubeApi")) return;
-
-  const script = document.createElement("script");
-  script.id = "youtubeApi";
-  script.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(script);
+  const s = document.createElement("script");
+  s.id = "youtubeApi";
+  s.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(s);
 }
 
-window.onYouTubeIframeAPIReady = function () {
+window.onYouTubeIframeAPIReady = () => {
   apiReady = true;
+  applyRemoteState();
 };
 
-function createOrLoad(videoId) {
-  if (!apiReady) {
-    ensureApi();
-    return;
-  }
+function createPlayer(videoId, startSeconds = 0, autoplay = false) {
+  if (!apiReady) { ensureApi(); return; }
 
   if (!player) {
     let host = document.getElementById("hiddenYT");
-
     if (!host) {
       host = document.createElement("div");
       host.id = "hiddenYT";
@@ -454,129 +540,196 @@ function createOrLoad(videoId) {
     }
 
     player = new YT.Player("hiddenYT", {
-      height: "1",
-      width: "1",
-      videoId,
-      playerVars: {
-        autoplay: 1,
-        playsinline: 1,
-        rel: 0
-      },
-      events: {
-        onReady: e => {
-          e.target.playVideo();
-          playBtn.textContent = "⏸";
+      height:"1", width:"1", videoId,
+      playerVars:{ autoplay: autoplay ? 1 : 0, playsinline:1, rel:0, start:Math.max(0,Math.floor(startSeconds)) },
+      events:{
+        onReady:e => {
+          if (startSeconds > 0) e.target.seekTo(startSeconds, true);
+          if (autoplay) e.target.playVideo();
+          else e.target.pauseVideo();
         },
-        onStateChange: e => {
-          if (e.data === YT.PlayerState.PLAYING) {
-            playBtn.textContent = "⏸";
-          }
-          if (e.data === YT.PlayerState.PAUSED) {
-            playBtn.textContent = "▶";
-          }
-          if (e.data === YT.PlayerState.ENDED) {
-            nextTrack();
-          }
+        onStateChange:e => {
+          if (e.data === YT.PlayerState.PLAYING) playBtn.textContent = "⏸";
+          if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) playBtn.textContent = "▶";
+          if (isAdmin && !suppressAdminWrite && e.data === YT.PlayerState.ENDED) adminNext();
         }
       }
     });
   } else {
-    player.loadVideoById(videoId);
-    playBtn.textContent = "⏸";
+    const loaded = player.getVideoData?.()?.video_id || "";
+    if (loaded !== videoId) {
+      if (autoplay) player.loadVideoById({videoId,startSeconds:Math.max(0,startSeconds)});
+      else {
+        player.cueVideoById({videoId,startSeconds:Math.max(0,startSeconds)});
+        player.seekTo(Math.max(0,startSeconds), true);
+      }
+    } else {
+      player.seekTo(Math.max(0,startSeconds), true);
+      autoplay ? player.playVideo() : player.pauseVideo();
+    }
   }
 }
 
-function playIndex(i) {
-  if (i < 0 || i >= queue.length) return;
-  if (!queue[i]?.videoId || queue[i]?.status === "invalid") return;
+function expectedPosition(s) {
+  let p = Number(s.position || 0);
+  if (s.isPlaying && s.startedAt) p += Math.max(0, Date.now() - Number(s.startedAt)) / 1000;
+  return p;
+}
 
+function applyRemoteState() {
+  if (!remoteState?.currentId) {
+    current = -1;
+    updateBar();
+    if (player && !isAdmin) player.pauseVideo();
+    return;
+  }
+
+  const idx = queue.findIndex(t => t.id === remoteState.currentId);
+  if (idx < 0 || !queue[idx]?.videoId) return;
+
+  current = idx;
+  updateBar();
+
+  if (isAdmin) return; // Admin is the source of truth.
+
+  const pos = expectedPosition(remoteState);
+  const mayAutoplay = audioUnlocked;
+
+  suppressAdminWrite = true;
+  createPlayer(queue[idx].videoId, pos, !!remoteState.isPlaying && mayAutoplay);
+  suppressAdminWrite = false;
+
+  if (remoteState.isPlaying && !audioUnlocked) unlockBtn.classList.add("show");
+  else unlockBtn.classList.remove("show");
+}
+
+async function writeState(partial) {
+  if (!isAdmin) return;
+  await update(stateRef, { ...partial, updatedAt:serverTimestamp() });
+}
+
+async function adminPlayIndex(i) {
+  if (!isAdmin || i<0 || i>=queue.length || !queue[i]?.videoId) return;
   current = i;
   updateBar();
-  createOrLoad(queue[current].videoId);
-}
 
-function nextTrack() {
-  if (!queue.length) return;
+  suppressAdminWrite = true;
+  createPlayer(queue[i].videoId, 0, true);
+  suppressAdminWrite = false;
 
-  let i = current;
-
-  for (let tries = 0; tries < queue.length; tries++) {
-    i = (i + 1) % queue.length;
-
-    if (queue[i]?.videoId && queue[i]?.status !== "invalid") {
-      playIndex(i);
-      return;
-    }
-  }
-}
-
-function prevTrack() {
-  if (!queue.length) return;
-
-  let i = current;
-
-  for (let tries = 0; tries < queue.length; tries++) {
-    i = (i - 1 + queue.length) % queue.length;
-
-    if (queue[i]?.videoId && queue[i]?.status !== "invalid") {
-      playIndex(i);
-      return;
-    }
-  }
-}
-
-function toggleQueue() {
-  queueBox.classList.toggle("open");
-}
-
-document.getElementById("ymQueueBtn")
-  .addEventListener("click", toggleQueue);
-
-document.getElementById("ymTrack")
-  .addEventListener("click", toggleQueue);
-
-document.getElementById("ymTrack")
-  .addEventListener("keydown", e => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggleQueue();
-    }
+  await set(stateRef, {
+    currentId: queue[i].id,
+    isPlaying: true,
+    position: 0,
+    startedAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
   });
+}
 
-document.getElementById("ymClose")
-  .addEventListener("click", () => queueBox.classList.remove("open"));
+async function adminTogglePlay() {
+  if (!isAdmin) return;
 
-document.getElementById("ymNext")
-  .addEventListener("click", nextTrack);
-
-document.getElementById("ymPrev")
-  .addEventListener("click", prevTrack);
-
-playBtn.addEventListener("click", () => {
   if (current < 0) {
-    const first = queue.findIndex(
-      t => t.videoId && t.status !== "invalid"
-    );
-
-    if (first >= 0) playIndex(first);
+    const first = queue.findIndex(t => t.videoId && t.status !== "invalid");
+    if (first >= 0) await adminPlayIndex(first);
     return;
   }
 
   if (!player) {
-    playIndex(current);
+    await adminPlayIndex(current);
     return;
   }
 
-  const state = player.getPlayerState();
-
-  if (state === YT.PlayerState.PLAYING) {
+  const st = player.getPlayerState();
+  if (st === YT.PlayerState.PLAYING) {
+    const p = player.getCurrentTime() || 0;
     player.pauseVideo();
+    await writeState({ currentId:queue[current].id, isPlaying:false, position:p, startedAt:null });
   } else {
+    const p = player.getCurrentTime() || Number(remoteState.position || 0);
     player.playVideo();
+    await writeState({ currentId:queue[current].id, isPlaying:true, position:p, startedAt:serverTimestamp() });
   }
+}
+
+async function adminNext() {
+  if (!isAdmin || !queue.length) return;
+  let i = current;
+  for (let n=0;n<queue.length;n++) {
+    i = (i+1)%queue.length;
+    if (queue[i]?.videoId && queue[i]?.status !== "invalid") return adminPlayIndex(i);
+  }
+}
+
+async function adminPrev() {
+  if (!isAdmin || !queue.length) return;
+  let i = current;
+  for (let n=0;n<queue.length;n++) {
+    i = (i-1+queue.length)%queue.length;
+    if (queue[i]?.videoId && queue[i]?.status !== "invalid") return adminPlayIndex(i);
+  }
+}
+
+// Admin add track
+document.getElementById("adminAddTrackForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const msg = document.getElementById("adminTrackMsg");
+  const sourceUrl = document.getElementById("adminTrackUrl").value.trim();
+  const videoId = getYoutubeId(sourceUrl);
+  if (!videoId) { msg.textContent = "Не вдалося розпізнати YouTube-посилання."; return; }
+
+  msg.textContent = "Додаю...";
+  let title = document.getElementById("adminTrackTitle").value.trim();
+  let artist = "";
+  let thumbnailUrl = `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/mqdefault.jpg`;
+
+  try {
+    const watch = `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
+    const r = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(watch)}&format=json`);
+    if (r.ok) {
+      const m = await r.json();
+      if (!title) title = m.title || "";
+      artist = m.author_name || "";
+      thumbnailUrl = m.thumbnail_url || thumbnailUrl;
+    }
+  } catch (_) {}
+
+  const maxOrder = queue.reduce((m,t)=>Math.max(m,Number(t.order)||0),0);
+  const newRef = push(musicRef);
+  await set(newRef, {
+    sourceUrl, videoId,
+    title: title || "YouTube трек",
+    artist,
+    thumbnailUrl,
+    requester: document.getElementById("adminTrackRequester").value.trim() || "YevheniiPel",
+    status:"queued",
+    order:maxOrder+100,
+    createdAt:new Date().toISOString(),
+    addedByAdmin:true
+  });
+
+  e.target.reset();
+  document.getElementById("adminTrackRequester").value = "YevheniiPel";
+  msg.textContent = "✅ Трек додано.";
 });
 
+// Queue + controls
+document.getElementById("ymQueueBtn").addEventListener("click", ()=>queueBox.classList.toggle("open"));
+document.getElementById("ymTrack").addEventListener("click", ()=>queueBox.classList.toggle("open"));
+document.getElementById("ymClose").addEventListener("click", ()=>queueBox.classList.remove("open"));
+playBtn.addEventListener("click", adminTogglePlay);
+document.getElementById("ymNext").addEventListener("click", adminNext);
+document.getElementById("ymPrev").addEventListener("click", adminPrev);
 
+unlockBtn.addEventListener("click", () => {
+  audioUnlocked = true;
+  unlockBtn.classList.remove("show");
+  applyRemoteState();
+});
+
+// Auth UI
 const adminModal = document.getElementById("adminModal");
 const adminLoginBtn = document.getElementById("adminLoginBtn");
 const adminLogoutBtn = document.getElementById("adminLogoutBtn");
@@ -584,79 +737,76 @@ const adminCancelBtn = document.getElementById("adminCancelBtn");
 const adminLoginForm = document.getElementById("adminLoginForm");
 const adminError = document.getElementById("adminError");
 
-function openAdminModal() {
-  adminError.textContent = "";
-  adminModal.classList.add("open");
-  adminModal.setAttribute("aria-hidden", "false");
-}
-
-function closeAdminModal() {
-  adminModal.classList.remove("open");
-  adminModal.setAttribute("aria-hidden", "true");
-  adminLoginForm.reset();
-  adminError.textContent = "";
-}
+function openAdminModal(){ adminError.textContent=""; adminModal.classList.add("open"); }
+function closeAdminModal(){ adminModal.classList.remove("open"); adminLoginForm.reset(); adminError.textContent=""; }
 
 adminLoginBtn.addEventListener("click", openAdminModal);
 adminCancelBtn.addEventListener("click", closeAdminModal);
-adminLogoutBtn.addEventListener("click", () => signOut(auth));
-
-adminModal.addEventListener("click", e => {
-  if (e.target === adminModal) closeAdminModal();
-});
+adminLogoutBtn.addEventListener("click", ()=>signOut(auth));
+adminModal.addEventListener("click", e => { if (e.target === adminModal) closeAdminModal(); });
 
 adminLoginForm.addEventListener("submit", async e => {
   e.preventDefault();
-  adminError.textContent = "";
-
   try {
     const cred = await signInWithEmailAndPassword(
       auth,
       document.getElementById("adminEmail").value,
       document.getElementById("adminPassword").value
     );
-
     if (cred.user.uid !== ADMIN_UID) {
       await signOut(auth);
       throw new Error("not-admin");
     }
-
     closeAdminModal();
-  } catch (err) {
+  } catch (_) {
     adminError.textContent = "Невірний email або пароль.";
   }
 });
 
 onAuthStateChanged(auth, user => {
   isAdmin = !!user && user.uid === ADMIN_UID;
-
   document.body.classList.toggle("is-admin", isAdmin);
   adminLoginBtn.hidden = isAdmin;
   adminLogoutBtn.hidden = !isAdmin;
-
+  audioUnlocked = isAdmin; // admin can control immediately after interaction/login
   renderQueue();
 });
 
+// Realtime queue
+onValue(musicRef, async snap => {
+  const data = snap.val() || {};
+  const previousId = queue[current]?.id || remoteState?.currentId || null;
 
-onValue(musicRef, snapshot => {
-  const data = snapshot.val() || {};
+  queue = Object.entries(data).map(([id,item])=>({id,...item})).sort(queueSort);
 
-  const previousId = queue[current]?.id || null;
-
-  queue = Object.entries(data)
-    .map(([id, item]) => ({ id, ...item }))
-    .sort((a, b) =>
-      String(a.createdAt || "").localeCompare(String(b.createdAt || ""))
-    );
-
-  if (previousId) {
-    current = queue.findIndex(t => t.id === previousId);
-  }
-
+  if (previousId) current = queue.findIndex(t=>t.id===previousId);
   if (current >= queue.length) current = -1;
 
   updateBar();
+  applyRemoteState();
+
+  // One-time order normalization for legacy tracks.
+  if (isAdmin && queue.some(t => !Number.isFinite(Number(t.order)))) {
+    try { await normalizeOrders(); } catch(e) { console.error(e); }
+  }
 });
+
+// Realtime playback state
+onValue(stateRef, snap => {
+  remoteState = snap.val() || {};
+  applyRemoteState();
+});
+
+// Keep viewers close to admin playback time.
+setInterval(() => {
+  if (isAdmin || !audioUnlocked || !player || !remoteState?.isPlaying || !remoteState?.currentId) return;
+  const idx = queue.findIndex(t=>t.id===remoteState.currentId);
+  if (idx < 0 || idx !== current) return;
+  const expected = expectedPosition(remoteState);
+  const actual = Number(player.getCurrentTime?.() || 0);
+  if (Math.abs(expected - actual) > 2.2) player.seekTo(expected, true);
+  if (player.getPlayerState?.() !== YT.PlayerState.PLAYING) player.playVideo();
+}, 5000);
 
 ensureApi();
 updateBar();
