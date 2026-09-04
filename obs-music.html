@@ -49,7 +49,7 @@ function expectedPosition(s){
   return p;
 }
 function render(){
-  const t=queue[state.currentId];
+  const t=state?.source==="radio" ? state.radioTrack : queue[state.currentId];
   if(!t){
     $("title").textContent="Очікуємо музику...";
     $("artist").textContent="—";$("requester").textContent="—";$("cover").innerHTML="♫";
@@ -64,7 +64,7 @@ function render(){
   sync();
 }
 function sync(){
-  const t=queue[state.currentId];
+  const t=state?.source==="radio" ? state.radioTrack : queue[state.currentId];
   if(!apiReady||!t?.videoId)return;
   const pos=expectedPosition(state);
   if(!player){
