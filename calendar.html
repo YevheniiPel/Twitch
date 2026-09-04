@@ -164,7 +164,7 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
   <div class="movie-overview" id="detailOverview">Опис фільму відсутній.</div>
 </div>
 
-<div class="modal-actions"><button type="button" class="btn outline" onclick="closeDetailsModal()">Закрити</button><button type="button" id="deleteMovieBtn" class="btn danger admin-only">Видалити</button><button type="submit" class="btn blue admin-only">Зберегти зміни</button></div>
+<div class="modal-actions"><button type="button" class="btn outline" onclick="closeDetailsModal()">Закрити</button><button type="button" id="returnToQueueBtn" class="btn outline admin-only">↩ Повернути в чергу</button><button type="button" id="deleteMovieBtn" class="btn danger admin-only">Видалити</button><button type="submit" class="btn blue admin-only">Зберегти зміни</button></div>
 </form>
 </div></div></div></div>
 
@@ -172,7 +172,7 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",authDomain:"yevheniipel.firebaseapp.com",databaseURL:"https://yevheniipel-default-rtdb.europe-west1.firebasedatabase.app/",projectId:"yevheniipel",storageBucket:"yevheniipel.firebasestorage.app",messagingSenderId:"1062789800045",appId:"1:1062789800045:web:e72c6a2826b699fd579f64"};
-const app=initializeApp(firebaseConfig),db=getDatabase(app),moviesRef=ref(db,'movies');
+const app=initializeApp(firebaseConfig),db=getDatabase(app),moviesRef=ref(db,'movies'),queueRef=ref(db,'queue');
 let currentDate=new Date(),movies=[],isAdmin=false,selectedMovieId=null,pendingPhotoData=null,removePhotoRequested=false;
 
 const WORKER_URL = "https://yevheniipel-movie-queue.shinewar06.workers.dev";
@@ -305,6 +305,51 @@ function fillDetails(m){
 $('editPhoto').addEventListener('change',async e=>{if(!isAdmin)return;const f=e.target.files?.[0];if(!f)return;try{pendingPhotoData=await compressImage(f);removePhotoRequested=false;showPoster(pendingPhotoData);}catch(err){alert(err.message||'Не вдалося обробити фото.');}});
 $('removePhotoBtn').onclick=()=>{if(!isAdmin)return;pendingPhotoData=null;removePhotoRequested=true;const m=movies.find(x=>x.id===selectedMovieId);showPoster(m?.posterUrl||null);$('editPhoto').value='';};
 $('editForm').addEventListener('submit',async e=>{e.preventDefault();if(!isAdmin||!selectedMovieId)return;const payload={title:$('editTitle').value.trim(),requester:$('editRequester').value.trim(),date:$('editDate').value,status:$('editStatus').value,updatedAt:Date.now()};if(removePhotoRequested)payload.photoData=null;else if(pendingPhotoData)payload.photoData=pendingPhotoData;await update(ref(db,`movies/${selectedMovieId}`),payload);pendingPhotoData=null;removePhotoRequested=false;window.closeDetailsModal();});
+$('returnToQueueBtn').onclick=async()=>{
+  if(!isAdmin||!selectedMovieId)return;
+
+  const movie=movies.find(x=>x.id===selectedMovieId);
+  if(!movie)return;
+
+  if(!confirm(`Повернути «${movie.title||movie.tmdbTitle||'цей фільм'}» назад у чергу?`))return;
+
+  try{
+    const queueItemRef=push(queueRef);
+
+    await set(queueItemRef,{
+      title:movie.title||movie.tmdbTitle||'Без назви',
+      requester:movie.requester||'',
+      status:'queued',
+      createdAt:new Date().toISOString(),
+
+      twitchUserId:movie.twitchUserId||'',
+      redemptionId:movie.redemptionId||'',
+      rewardId:movie.rewardId||'',
+      rewardTitle:movie.rewardTitle||'',
+      rewardCost:movie.rewardCost||0,
+
+      tmdbId:movie.tmdbId||null,
+      tmdbTitle:movie.tmdbTitle||'',
+      originalTitle:movie.originalTitle||'',
+      year:movie.year||'',
+      releaseDate:movie.releaseDate||'',
+      overview:movie.overview||'',
+      posterUrl:movie.posterUrl||'',
+
+      photoData:movie.photoData||null,
+      returnedFromCalendar:true,
+      returnedAt:new Date().toISOString()
+    });
+
+    await remove(ref(db,`movies/${selectedMovieId}`));
+    window.closeDetailsModal();
+    alert('✅ Фільм повернуто в чергу.');
+  }catch(err){
+    console.error(err);
+    alert(err.message||'Не вдалося повернути фільм у чергу.');
+  }
+};
+
 $('deleteMovieBtn').onclick=async()=>{if(!isAdmin||!selectedMovieId)return;if(confirm('Видалити цей фільм із календаря?')){await remove(ref(db,`movies/${selectedMovieId}`));window.closeDetailsModal();}};
 $('addForm').addEventListener('submit',async e=>{e.preventDefault();if(!isAdmin)return;let photoData=null;const f=$('addPhoto').files?.[0];try{if(f)photoData=await compressImage(f);const nr=push(moviesRef);await set(nr,{title:$('addTitle').value.trim(),requester:$('addRequester').value.trim(),date:$('addDate').value,status:$('addStatus').value,photoData:photoData||null,createdAt:Date.now()});window.closeAddModal();}catch(err){alert(err.message||'Не вдалося зберегти фільм.');}});
 
