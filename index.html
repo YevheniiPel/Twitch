@@ -417,6 +417,10 @@ body.menu-open{overflow:hidden}
     <div class="admin-note">
       Порядок треків змінюється кнопками ↑ і ↓ у черзі. Керування Play / Pause / Next / Prev доступне тільки після входу адміністратора.
     </div>
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button id="radioToggleBtn" class="btn outline" type="button">📻 Авторадіо: УВІМК</button>
+      <span id="radioStatus" class="admin-note" style="margin:0">Після останнього замовлення запуститься схожа пісня з YouTube.</span>
+    </div>
   </div>
 </section><section id="schedule" class="section"><div class="label">04 / РОЗКЛАД</div><h2>Зустрічаємось <span>на стрімі.</span></h2><div class="days"><div class="day"><span>Пн</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Вт</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Ср</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Чт</span><b>—</b><small>Вихідний</small></div><div class="day"><span>Пт</span><b>19:00</b><small>Стрім</small></div><div class="day"><span>Сб</span><b>10:00</b><small>Стрім</small></div><div class="day"><span>Нд</span><b>—</b><small>Вихідний</small></div></div></section>
 <section id="socials" class="section socials"><div><div class="label">05 / СПІЛЬНОТА</div><h2>Будьмо<br><span>на зв'язку.</span></h2></div><div class="socialgrid"><a class="social" href="https://t.me/ZhenyaTwitch" target="_blank"><b>Telegram →</b><strong>📲</strong><small>@ZhenyaTwitch</small></a><a class="social" href="https://www.instagram.com/peleshko_yevgen/" target="_blank"><b>Instagram →</b><strong>◎</strong><small>@peleshko_yevgen</small></a><a class="social" href="https://www.twitch.tv/yevheniipel" target="_blank"><b>Twitch →</b><strong>◉</strong><small>YevheniiPel</small></a><a class="social" href="#top"><b>На головну ↑</b><strong>✦</strong><small>YevheniiPel</small></a></div></section>
@@ -507,6 +511,8 @@ const auth = getAuth(app);
 
 const musicRef = ref(db, "musicQueue");
 const stateRef = ref(db, "musicState");
+const WORKER_URL = "https://yevheniipel-movie-queue.shinewar06.workers.dev";
+const RADIO_ANNOUNCEMENT = "Перепрошую, але у нас пісню замовили";
 
 let queue = [];
 let current = -1;
@@ -516,11 +522,18 @@ let isAdmin = false;
 let audioUnlocked = false;
 let remoteState = {};
 let suppressAdminWrite = false;
+let autoRadioEnabled = true;
+let radioHistory = [];
+let knownQueueIds = new Set();
+let queueInitialized = false;
+let interruptingRadio = false;
 
 const queueBox = document.getElementById("ymQueue");
 const list = document.getElementById("ymList");
 const playBtn = document.getElementById("ymPlay");
 const unlockBtn = document.getElementById("viewerUnlock");
+const radioToggleBtn = document.getElementById("radioToggleBtn");
+const radioStatus = document.getElementById("radioStatus");
 
 function esc(s = "") {
   return String(s).replace(/[&<>'"]/g, c => ({
@@ -555,14 +568,32 @@ function queueSort(a,b) {
   return String(a.createdAt || "").localeCompare(String(b.createdAt || ""));
 }
 
+function currentDisplayTrack() {
+  if (remoteState?.source === "radio" && remoteState?.radioTrack) {
+    return remoteState.radioTrack;
+  }
+  return queue[current];
+}
+
 function updateBar() {
-  const t = queue[current];
-  document.getElementById("ymTitle").textContent = t?.title || "Нічого не грає";
-  document.getElementById("ymArtist").textContent = t?.artist || "—";
-  document.getElementById("ymRequester").textContent = t?.requester || "—";
+  const t = currentDisplayTrack();
+
+  document.getElementById("ymTitle").textContent =
+    t?.title || "Нічого не грає";
+
+  document.getElementById("ymArtist").textContent =
+    t?.artist || "—";
+
+  document.getElementById("ymRequester").textContent =
+    t?.requester || "—";
+
   const box = document.getElementById("ymThumb");
-  const image = thumb(t);
-  box.innerHTML = image ? `<img src="${esc(image)}" alt="">` : "♫";
+  const image = t ? thumb(t) : "";
+
+  box.innerHTML = image
+    ? `<img src="${esc(image)}" alt="">`
+    : "♫";
+
   renderQueue();
 }
 
@@ -688,7 +719,7 @@ function createPlayer(videoId, startSeconds = 0, autoplay = false) {
         onStateChange:e => {
           if (e.data === YT.PlayerState.PLAYING) playBtn.textContent = "⏸";
           if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) playBtn.textContent = "▶";
-          if (isAdmin && !suppressAdminWrite && e.data === YT.PlayerState.ENDED) adminNext();
+          if (isAdmin && !suppressAdminWrite && e.data === YT.PlayerState.ENDED) handleTrackEnded();
         }
       }
     });
@@ -714,26 +745,33 @@ function expectedPosition(s) {
 }
 
 function applyRemoteState() {
-  if (!remoteState?.currentId) {
+  let track = null;
+
+  if (remoteState?.source === "radio" && remoteState?.radioTrack?.videoId) {
+    track = remoteState.radioTrack;
     current = -1;
-    updateBar();
+  } else if (remoteState?.currentId) {
+    const idx = queue.findIndex(t => t.id === remoteState.currentId);
+    if (idx >= 0 && queue[idx]?.videoId) {
+      current = idx;
+      track = queue[idx];
+    }
+  }
+
+  updateBar();
+
+  if (!track?.videoId) {
     if (player && !isAdmin) player.pauseVideo();
     return;
   }
 
-  const idx = queue.findIndex(t => t.id === remoteState.currentId);
-  if (idx < 0 || !queue[idx]?.videoId) return;
-
-  current = idx;
-  updateBar();
-
-  if (isAdmin) return; // Admin is the source of truth.
+  if (isAdmin) return; // Адмін є джерелом керування.
 
   const pos = expectedPosition(remoteState);
   const mayAutoplay = audioUnlocked;
 
   suppressAdminWrite = true;
-  createPlayer(queue[idx].videoId, pos, !!remoteState.isPlaying && mayAutoplay);
+  createPlayer(track.videoId, pos, !!remoteState.isPlaying && mayAutoplay);
   suppressAdminWrite = false;
 
   if (remoteState.isPlaying && !audioUnlocked) unlockBtn.classList.add("show");
@@ -747,6 +785,7 @@ async function writeState(partial) {
 
 async function adminPlayIndex(i) {
   if (!isAdmin || i<0 || i>=queue.length || !queue[i]?.videoId) return;
+
   current = i;
   updateBar();
 
@@ -759,52 +798,261 @@ async function adminPlayIndex(i) {
     isPlaying: true,
     position: 0,
     startedAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
+    updatedAt: serverTimestamp(),
+    source: "request",
+    radioTrack: null
   });
 }
 
 async function adminTogglePlay() {
   if (!isAdmin) return;
 
-  if (current < 0) {
+  const display = currentDisplayTrack();
+
+  if (!display?.videoId) {
     const first = queue.findIndex(t => t.videoId && t.status !== "invalid");
     if (first >= 0) await adminPlayIndex(first);
     return;
   }
 
   if (!player) {
-    await adminPlayIndex(current);
+    if (remoteState?.source === "radio" && remoteState?.radioTrack?.videoId) {
+      suppressAdminWrite = true;
+      createPlayer(remoteState.radioTrack.videoId, expectedPosition(remoteState), true);
+      suppressAdminWrite = false;
+    } else if (current >= 0) {
+      await adminPlayIndex(current);
+    }
     return;
   }
 
   const st = player.getPlayerState();
+  const p = player.getCurrentTime() || 0;
+
   if (st === YT.PlayerState.PLAYING) {
-    const p = player.getCurrentTime() || 0;
     player.pauseVideo();
-    await writeState({ currentId:queue[current].id, isPlaying:false, position:p, startedAt:null });
+    await writeState({
+      isPlaying:false,
+      position:p,
+      startedAt:null
+    });
   } else {
-    const p = player.getCurrentTime() || Number(remoteState.position || 0);
     player.playVideo();
-    await writeState({ currentId:queue[current].id, isPlaying:true, position:p, startedAt:serverTimestamp() });
+    await writeState({
+      isPlaying:true,
+      position:p,
+      startedAt:serverTimestamp()
+    });
+  }
+}
+
+async function findRadioRecommendation(seedTrack) {
+  if (!seedTrack) return null;
+
+  const exclude = [
+    ...radioHistory,
+    ...queue.map(t => t.videoId).filter(Boolean)
+  ].slice(-40);
+
+  const params = new URLSearchParams({
+    title: seedTrack.title || "",
+    artist: seedTrack.artist || ""
+  });
+
+  if (exclude.length) params.set("exclude", exclude.join(","));
+
+  const r = await fetch(`${WORKER_URL}/youtube/recommend?${params.toString()}`);
+  const data = await r.json();
+
+  if (!r.ok || !data?.ok || !data?.recommendation?.videoId) {
+    throw new Error(data?.error || "Не вдалося знайти пісню для авторадіо.");
+  }
+
+  return data.recommendation;
+}
+
+async function startRadioFrom(seedTrack) {
+  if (!isAdmin || !autoRadioEnabled || !seedTrack) return;
+
+  try {
+    if (radioStatus) radioStatus.textContent = "Шукаю схожу пісню…";
+
+    const recommendation = await findRadioRecommendation(seedTrack);
+
+    radioHistory.push(recommendation.videoId);
+    radioHistory = radioHistory.slice(-40);
+
+    current = -1;
+
+    suppressAdminWrite = true;
+    createPlayer(recommendation.videoId, 0, true);
+    suppressAdminWrite = false;
+
+    await set(stateRef, {
+      currentId: "",
+      isPlaying: true,
+      position: 0,
+      startedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      source: "radio",
+      radioTrack: {
+        videoId: recommendation.videoId,
+        title: recommendation.title || "YouTube трек",
+        artist: recommendation.artist || "",
+        thumbnailUrl: recommendation.thumbnailUrl || "",
+        sourceUrl: recommendation.sourceUrl || "",
+        requester: "📻 Авторадіо YevheniiPel",
+        source: "radio"
+      }
+    });
+
+    if (radioStatus) radioStatus.textContent = `📻 Грає: ${recommendation.title || "YouTube трек"}`;
+  } catch (err) {
+    console.error("Auto Radio:", err);
+    if (radioStatus) radioStatus.textContent = `⚠️ ${err.message}`;
+  }
+}
+
+async function handleTrackEnded() {
+  if (!isAdmin) return;
+
+  // Якщо закінчилась пісня авторадіо — шукаємо наступну схожу до неї.
+  if (remoteState?.source === "radio" && remoteState?.radioTrack) {
+    if (autoRadioEnabled) await startRadioFrom(remoteState.radioTrack);
+    else await writeState({ isPlaying:false, position:0, startedAt:null });
+    return;
+  }
+
+  // Якщо закінчилось замовлення і нижче є ще одне — запускаємо наступне.
+  const next = queue.findIndex((t, i) =>
+    i > current &&
+    t?.videoId &&
+    t?.status !== "invalid"
+  );
+
+  if (next >= 0) {
+    await adminPlayIndex(next);
+    return;
+  }
+
+  // Черга закінчилась — запускаємо авторадіо від останньої пісні.
+  const seed = queue[current];
+  if (autoRadioEnabled && seed) {
+    await startRadioFrom(seed);
+  } else {
+    await writeState({ isPlaying:false, position:0, startedAt:null });
   }
 }
 
 async function adminNext() {
-  if (!isAdmin || !queue.length) return;
-  let i = current;
-  for (let n=0;n<queue.length;n++) {
-    i = (i+1)%queue.length;
-    if (queue[i]?.videoId && queue[i]?.status !== "invalid") return adminPlayIndex(i);
+  if (!isAdmin) return;
+
+  if (remoteState?.source === "radio") {
+    await startRadioFrom(remoteState.radioTrack);
+    return;
+  }
+
+  const next = queue.findIndex((t, i) =>
+    i > current &&
+    t?.videoId &&
+    t?.status !== "invalid"
+  );
+
+  if (next >= 0) {
+    await adminPlayIndex(next);
+  } else if (autoRadioEnabled && queue[current]) {
+    await startRadioFrom(queue[current]);
   }
 }
 
 async function adminPrev() {
   if (!isAdmin || !queue.length) return;
-  let i = current;
-  for (let n=0;n<queue.length;n++) {
-    i = (i-1+queue.length)%queue.length;
-    if (queue[i]?.videoId && queue[i]?.status !== "invalid") return adminPlayIndex(i);
+
+  if (remoteState?.source === "radio") {
+    // Повертаємося до останнього замовлення.
+    for (let i = queue.length - 1; i >= 0; i--) {
+      if (queue[i]?.videoId && queue[i]?.status !== "invalid") {
+        await adminPlayIndex(i);
+        return;
+      }
+    }
+    return;
   }
+
+  for (let i = current - 1; i >= 0; i--) {
+    if (queue[i]?.videoId && queue[i]?.status !== "invalid") {
+      await adminPlayIndex(i);
+      return;
+    }
+  }
+}
+
+function speakRequestAnnouncement() {
+  return new Promise(resolve => {
+    try {
+      if (!("speechSynthesis" in window)) {
+        resolve();
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const utter = new SpeechSynthesisUtterance(RADIO_ANNOUNCEMENT);
+      utter.lang = "uk-UA";
+      utter.rate = 1;
+      utter.pitch = 1;
+      utter.volume = 1;
+      utter.onend = resolve;
+      utter.onerror = resolve;
+
+      window.speechSynthesis.speak(utter);
+
+      // Запобіжник, якщо браузер не викличе onend.
+      setTimeout(resolve, 6500);
+    } catch (_) {
+      resolve();
+    }
+  });
+}
+
+async function interruptRadioForRequest(trackId) {
+  if (!isAdmin || interruptingRadio) return;
+  const idx = queue.findIndex(t => t.id === trackId);
+  if (idx < 0 || !queue[idx]?.videoId || queue[idx]?.status === "invalid") return;
+
+  interruptingRadio = true;
+
+  try {
+    if (player) player.pauseVideo();
+
+    await writeState({
+      isPlaying:false,
+      position: Number(player?.getCurrentTime?.() || 0),
+      startedAt:null
+    });
+
+    await speakRequestAnnouncement();
+    await adminPlayIndex(idx);
+  } finally {
+    interruptingRadio = false;
+  }
+}
+
+if (radioToggleBtn) {
+  radioToggleBtn.addEventListener("click", () => {
+    if (!isAdmin) return;
+
+    autoRadioEnabled = !autoRadioEnabled;
+    radioToggleBtn.textContent = autoRadioEnabled
+      ? "📻 Авторадіо: УВІМК"
+      : "📻 Авторадіо: ВИМК";
+
+    if (radioStatus) {
+      radioStatus.textContent = autoRadioEnabled
+        ? "Після останнього замовлення запуститься схожа пісня з YouTube."
+        : "Авторадіо вимкнене.";
+    }
+  });
 }
 
 // Admin add track
@@ -942,21 +1190,57 @@ onAuthStateChanged(auth, user => {
   if (mobileLogoutBtn) mobileLogoutBtn.hidden = !isAdmin;
 
   audioUnlocked = isAdmin; // admin can control immediately after interaction/login
+
+  if (radioToggleBtn) {
+    radioToggleBtn.textContent = autoRadioEnabled
+      ? "📻 Авторадіо: УВІМК"
+      : "📻 Авторадіо: ВИМК";
+  }
+
   renderQueue();
 });
 
 // Realtime queue
 onValue(musicRef, async snap => {
   const data = snap.val() || {};
+  const incomingIds = new Set(Object.keys(data));
+
+  let newIds = [];
+  if (queueInitialized) {
+    newIds = [...incomingIds].filter(id => !knownQueueIds.has(id));
+  }
+
+  knownQueueIds = incomingIds;
+  queueInitialized = true;
+
   const previousId = queue[current]?.id || remoteState?.currentId || null;
 
-  queue = Object.entries(data).map(([id,item])=>({id,...item})).sort(queueSort);
+  queue = Object.entries(data)
+    .map(([id,item]) => ({id,...item}))
+    .sort(queueSort);
 
-  if (previousId) current = queue.findIndex(t=>t.id===previousId);
+  if (previousId) current = queue.findIndex(t => t.id === previousId);
   if (current >= queue.length) current = -1;
 
   updateBar();
   applyRemoteState();
+
+  // Якщо під час авторадіо прийшло нове замовлення — перериваємо авторадіо.
+  if (
+    isAdmin &&
+    remoteState?.source === "radio" &&
+    remoteState?.isPlaying &&
+    newIds.length
+  ) {
+    const newest = newIds
+      .map(id => queue.find(t => t.id === id))
+      .filter(Boolean)
+      .sort(queueSort)[0];
+
+    if (newest?.id) {
+      await interruptRadioForRequest(newest.id);
+    }
+  }
 
   // One-time order normalization for legacy tracks.
   if (isAdmin && queue.some(t => !Number.isFinite(Number(t.order)))) {
@@ -973,8 +1257,18 @@ onValue(stateRef, snap => {
 // Keep viewers close to admin playback time.
 setInterval(() => {
   if (isAdmin || !audioUnlocked || !player || !remoteState?.isPlaying || !remoteState?.currentId) return;
-  const idx = queue.findIndex(t=>t.id===remoteState.currentId);
-  if (idx < 0 || idx !== current) return;
+  const track = remoteState?.source === "radio"
+    ? remoteState?.radioTrack
+    : queue.find(t => t.id === remoteState.currentId);
+
+  if (!track?.videoId) return;
+
+  const loaded = player.getVideoData?.()?.video_id || "";
+  if (loaded !== track.videoId) {
+    createPlayer(track.videoId, expectedPosition(remoteState), true);
+    return;
+  }
+
   const expected = expectedPosition(remoteState);
   const actual = Number(player.getCurrentTime?.() || 0);
   if (Math.abs(expected - actual) > 2.2) player.seekTo(expected, true);
