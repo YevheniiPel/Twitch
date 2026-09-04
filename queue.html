@@ -382,6 +382,10 @@ function render(){
       ? `<img class="poster" src="${esc(m.posterUrl)}" alt="Постер ${esc(displayTitle)}" loading="lazy">`
       : `<div class="poster-placeholder">Постер не знайдено</div>`;
 
+    const canEditTitle =
+      isAdmin ||
+      (siteUser && String(m.twitchUserId || '') === String(siteUser.id || ''));
+
     return `
       <article class="queue-item">
         <div class="pos">${i+1}</div>
@@ -397,18 +401,72 @@ function render(){
           </div>
           ${overview?`<div class="overview">${esc(overview)}</div>`:''}
         </div>
-        ${isAdmin?`
+        ${(canEditTitle || isAdmin)?`
           <div class="actions">
-            <div class="move-buttons">
+            ${canEditTitle?`<button class="mini" onclick="editMovieTitle('${m.id}')">✏️ Редагувати</button>`:''}
+            ${isAdmin?`<div class="move-buttons">
               <button class="mini" onclick="moveItem('${m.id}',-1)" title="Підняти вище">↑</button>
               <button class="mini" onclick="moveItem('${m.id}',1)" title="Опустити нижче">↓</button>
             </div>
             <button class="mini" onclick="assignDate('${m.id}')">📅 Дата</button>
-            <button class="mini danger" onclick="deleteItem('${m.id}')">✕</button>
+            <button class="mini danger" onclick="deleteItem('${m.id}')">✕</button>`:''}
           </div>`:''}
       </article>`;
   }).join('');
 }
+
+window.editMovieTitle=async id=>{
+  if(!siteUser){
+    alert('Спочатку увійдіть через Twitch.');
+    return;
+  }
+
+  const movie=queue.find(x=>x.id===id);
+  if(!movie)return;
+
+  const allowed=isAdmin || String(movie.twitchUserId||'')===String(siteUser.id||'');
+  if(!allowed){
+    alert('Ви можете редагувати лише свій фільм.');
+    return;
+  }
+
+  const entered=prompt('Введіть нову назву фільму:', movie.title||movie.tmdbTitle||'');
+  if(entered===null)return;
+
+  const title=entered.trim();
+  if(!title){
+    alert('Назва фільму не може бути порожньою.');
+    return;
+  }
+
+  const token=localStorage.getItem(SITE_SESSION_KEY);
+  if(!token){
+    alert('Сесія Twitch відсутня. Увійдіть ще раз.');
+    return;
+  }
+
+  try{
+    const response=await fetch(`${WORKER_URL}/movie/edit-title`,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${token}`
+      },
+      body:JSON.stringify({movieId:id,title})
+    });
+
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok || !data.ok){
+      alert(data.error||'Не вдалося оновити фільм.');
+      return;
+    }
+
+    alert('✅ Назву, постер, рік та опис оновлено з TMDb.');
+  }catch(error){
+    console.error(error);
+    alert('Помилка з’єднання з сервером.');
+  }
+};
 
 window.moveItem=async(id,dir)=>{
   if(!isAdmin)return;
