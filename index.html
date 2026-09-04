@@ -339,6 +339,8 @@ body.menu-open{overflow:hidden}
   .mobile-menu-overlay.open{pointer-events:auto}
 }
 
+
+.site-user-badge{display:inline-flex;align-items:center;gap:8px;color:#eaf6ff;font-weight:700;white-space:nowrap}.site-user-badge img{box-shadow:0 0 0 1px rgba(19,184,255,.45)}
 </style></head><body>
 <header class="nav">
   <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Відкрити меню" aria-expanded="false">
@@ -357,8 +359,9 @@ body.menu-open{overflow:hidden}
   </nav>
 
   <div class="nav-actions">
-    <button id="adminLoginBtn" class="btn outline admin-auth-btn" type="button">Вхід</button>
-    <button id="adminLogoutBtn" class="btn outline admin-auth-btn" type="button" hidden>Вихід</button>
+    <button id="adminLoginBtn" class="btn outline admin-auth-btn" type="button">Увійти через Twitch</button>
+    <span id="siteUserBadge" class="site-user-badge" hidden></span>
+    <button id="adminLogoutBtn" class="btn outline admin-auth-btn" type="button" hidden>Вийти</button>
     <a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
   </div>
 </header>
@@ -376,8 +379,9 @@ body.menu-open{overflow:hidden}
   </nav>
 
   <div class="mobile-auth">
-    <button id="mobileLoginBtn" class="btn outline" type="button">Вхід</button>
-    <button id="mobileLogoutBtn" class="btn outline" type="button" hidden>Вихід</button>
+    <button id="mobileLoginBtn" class="btn outline" type="button">Увійти через Twitch</button>
+    <div id="mobileUserBadge" class="site-user-badge" hidden></div>
+    <button id="mobileLogoutBtn" class="btn outline" type="button" hidden>Вийти</button>
     <a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
   </div>
 </aside>
@@ -428,23 +432,6 @@ body.menu-open{overflow:hidden}
 <footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer>
 
 
-<div class="auth-modal" id="adminModal" aria-hidden="true">
-  <div class="auth-card">
-    <h3>Вхід адміністратора</h3>
-    <form id="adminLoginForm">
-      <label for="adminEmail">Email</label>
-      <input id="adminEmail" type="email" required autocomplete="username">
-      <label for="adminPassword">Пароль</label>
-      <input id="adminPassword" type="password" required autocomplete="current-password">
-      <div class="auth-error" id="adminError"></div>
-      <div class="auth-actions">
-        <button class="btn outline" id="adminCancelBtn" type="button">Скасувати</button>
-        <button class="btn blue" type="submit">Увійти</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <div id="musicFrameHost"></div>
 
 <section class="ym-queue" id="ymQueue" aria-label="Черга музики">
@@ -487,11 +474,8 @@ body.menu-open{overflow:hidden}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 import {
-  getDatabase, ref, onValue, remove, set, update, push, serverTimestamp, get
+  getDatabase, ref, onValue, push, serverTimestamp, get
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
-import {
-  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",
@@ -503,15 +487,89 @@ const firebaseConfig = {
   appId: "1:1062789800045:web:e72c6a2826b699fd579f64"
 };
 
-const ADMIN_UID = "DKOWrhsxWLUGiJyy6kyYjLVsZB22";
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth(app);
 
 const musicRef = ref(db, "musicQueue");
 const stateRef = ref(db, "musicState");
 const WORKER_URL = "https://yevheniipel-movie-queue.shinewar06.workers.dev";
+
+const SITE_SESSION_KEY = "yevheniipel_twitch_session";
+let siteUser = null;
+
+function currentPageName() {
+  const name = location.pathname.split("/").pop();
+  return ["index.html", "calendar.html", "queue.html"].includes(name) ? name : "index.html";
+}
+
+function beginTwitchLogin() {
+  location.href = `${WORKER_URL}/login/twitch?return=${encodeURIComponent(currentPageName())}`;
+}
+
+function siteLogout() {
+  localStorage.removeItem(SITE_SESSION_KEY);
+  siteUser = null;
+  isAdmin = false;
+  applyAuthUI();
+}
+
+async function initSiteAuth() {
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const incoming = hash.get("twitch_session");
+  if (incoming) {
+    localStorage.setItem(SITE_SESSION_KEY, incoming);
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  const token = localStorage.getItem(SITE_SESSION_KEY);
+  if (!token) {
+    applyAuthUI();
+    return;
+  }
+
+  try {
+    const r = await fetch(`${WORKER_URL}/site-auth/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!r.ok) throw new Error("session_invalid");
+    const data = await r.json();
+    siteUser = data.user || null;
+    isAdmin = !!siteUser?.isAdmin;
+  } catch (_) {
+    localStorage.removeItem(SITE_SESSION_KEY);
+    siteUser = null;
+    isAdmin = false;
+  }
+  applyAuthUI();
+}
+
+function refPath(reference) {
+  const u = new URL(reference.toString());
+  return decodeURIComponent(u.pathname.replace(/^\/+|\/+$/g, "").replace(/\.json$/i, ""));
+}
+
+async function siteDbWrite(method, reference, value) {
+  const token = localStorage.getItem(SITE_SESSION_KEY);
+  if (!token) throw new Error("Потрібен вхід через Twitch.");
+
+  const r = await fetch(`${WORKER_URL}/site-db`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ method, path: refPath(reference), value })
+  });
+
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok || !data.ok) throw new Error(data.error || "Не вдалося зберегти зміни.");
+  return data.result;
+}
+
+const set = (reference, value) => siteDbWrite("PUT", reference, value);
+const update = (reference, value) => siteDbWrite("PATCH", reference, value);
+const remove = reference => siteDbWrite("DELETE", reference, null);
+
 const RADIO_ANNOUNCEMENT = "Перепрошую, але у нас пісню замовили";
 
 let queue = [];
@@ -1147,63 +1205,51 @@ mobileMenuBtn?.addEventListener("click", () => {
 mobileMenuOverlay?.addEventListener("click", closeMobileMenu);
 mobileMenu?.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMobileMenu));
 
-// Auth UI
-const adminModal = document.getElementById("adminModal");
+// Twitch Auth UI
 const adminLoginBtn = document.getElementById("adminLoginBtn");
 const adminLogoutBtn = document.getElementById("adminLogoutBtn");
-const adminCancelBtn = document.getElementById("adminCancelBtn");
-const adminLoginForm = document.getElementById("adminLoginForm");
-const adminError = document.getElementById("adminError");
+const siteUserBadge = document.getElementById("siteUserBadge");
+const mobileUserBadge = document.getElementById("mobileUserBadge");
 
-mobileLoginBtn?.addEventListener("click", () => { closeMobileMenu(); openAdminModal(); });
-mobileLogoutBtn?.addEventListener("click", () => { closeMobileMenu(); signOut(auth); });
+function userBadgeHtml(user) {
+  if (!user) return "";
+  const avatar = user.profileImageUrl
+    ? `<img src="${esc(user.profileImageUrl)}" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover">`
+    : "";
+  const admin = user.isAdmin ? ' <small style="color:#ff8a18">• Адмін</small>' : "";
+  return `${avatar}<span>${esc(user.displayName || user.login || "Twitch")}${admin}</span>`;
+}
 
-function openAdminModal(){ adminError.textContent=""; adminModal.classList.add("open"); }
-function closeAdminModal(){ adminModal.classList.remove("open"); adminLoginForm.reset(); adminError.textContent=""; }
-
-adminLoginBtn.addEventListener("click", openAdminModal);
-adminCancelBtn.addEventListener("click", closeAdminModal);
-adminLogoutBtn.addEventListener("click", ()=>signOut(auth));
-adminModal.addEventListener("click", e => { if (e.target === adminModal) closeAdminModal(); });
-
-adminLoginForm.addEventListener("submit", async e => {
-  e.preventDefault();
-  try {
-    const cred = await signInWithEmailAndPassword(
-      auth,
-      document.getElementById("adminEmail").value,
-      document.getElementById("adminPassword").value
-    );
-    if (cred.user.uid !== ADMIN_UID) {
-      await signOut(auth);
-      throw new Error("not-admin");
-    }
-    closeAdminModal();
-  } catch (_) {
-    adminError.textContent = "Невірний email або пароль.";
-  }
-});
-
-onAuthStateChanged(auth, user => {
-  isAdmin = !!user && user.uid === ADMIN_UID;
+function applyAuthUI() {
   document.body.classList.toggle("is-admin", isAdmin);
+  const loggedIn = !!siteUser;
 
-  adminLoginBtn.hidden = isAdmin;
-  adminLogoutBtn.hidden = !isAdmin;
-
-  if (mobileLoginBtn) mobileLoginBtn.hidden = isAdmin;
-  if (mobileLogoutBtn) mobileLogoutBtn.hidden = !isAdmin;
-
-  audioUnlocked = isAdmin; // admin can control immediately after interaction/login
-
-  if (radioToggleBtn) {
-    radioToggleBtn.textContent = autoRadioEnabled
-      ? "📻 Авторадіо: УВІМК"
-      : "📻 Авторадіо: ВИМК";
+  if (adminLoginBtn) adminLoginBtn.hidden = loggedIn;
+  if (adminLogoutBtn) adminLogoutBtn.hidden = !loggedIn;
+  if (siteUserBadge) {
+    siteUserBadge.hidden = !loggedIn;
+    siteUserBadge.innerHTML = userBadgeHtml(siteUser);
   }
 
+  if (mobileLoginBtn) mobileLoginBtn.hidden = loggedIn;
+  if (mobileLogoutBtn) mobileLogoutBtn.hidden = !loggedIn;
+  if (mobileUserBadge) {
+    mobileUserBadge.hidden = !loggedIn;
+    mobileUserBadge.innerHTML = userBadgeHtml(siteUser);
+  }
+
+  audioUnlocked = isAdmin;
+  if (radioToggleBtn) {
+    radioToggleBtn.textContent = autoRadioEnabled ? "📻 Авторадіо: УВІМК" : "📻 Авторадіо: ВИМК";
+  }
   renderQueue();
-});
+}
+
+mobileLoginBtn?.addEventListener("click", () => { closeMobileMenu(); beginTwitchLogin(); });
+mobileLogoutBtn?.addEventListener("click", () => { closeMobileMenu(); siteLogout(); });
+adminLoginBtn?.addEventListener("click", beginTwitchLogin);
+adminLogoutBtn?.addEventListener("click", siteLogout);
+initSiteAuth();
 
 // Realtime queue
 onValue(musicRef, async snap => {

@@ -169,8 +169,9 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 <a href="index.html#socials">Соцмережі</a>
 </nav>
 <div class="nav-right">
-<button id="authBtn" class="btn outline">Увійти</button>
+<button id="authBtn" class="btn outline">Увійти через Twitch</button>
 <span id="authStatus" class="status"></span>
+<button id="logoutBtn" class="btn outline" hidden>Вийти</button>
 </div>
 </header>
 
@@ -215,8 +216,7 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-import { getDatabase, ref, onValue, push, set, update, remove } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 
 const firebaseConfig={
   apiKey:"AIzaSyBkB1BamCMrPshtejkl23pkRvCa_thJns8",
@@ -228,46 +228,114 @@ const firebaseConfig={
   appId:"1:1062789800045:web:e72c6a2826b699fd579f64"
 };
 
-const ADMIN_UID="DKOWrhsxWLUGiJyy6kyYjLVsZB22";
 const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
 const db=getDatabase(app);
 
 let queue=[];
 let isAdmin=false;
 let selectedId=null;
 
+const WORKER_URL = "https://yevheniipel-movie-queue.shinewar06.workers.dev";
+const SITE_SESSION_KEY = "yevheniipel_twitch_session";
+let siteUser = null;
+
+function currentPageName() {
+  const name = location.pathname.split("/").pop();
+  return ["index.html", "calendar.html", "queue.html"].includes(name) ? name : "index.html";
+}
+
+function beginTwitchLogin() {
+  location.href = `${WORKER_URL}/login/twitch?return=${encodeURIComponent(currentPageName())}`;
+}
+
+function siteLogout() {
+  localStorage.removeItem(SITE_SESSION_KEY);
+  siteUser = null;
+  isAdmin = false;
+  applyAuthUI();
+}
+
+async function initSiteAuth() {
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const incoming = hash.get("twitch_session");
+  if (incoming) {
+    localStorage.setItem(SITE_SESSION_KEY, incoming);
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  const token = localStorage.getItem(SITE_SESSION_KEY);
+  if (!token) {
+    applyAuthUI();
+    return;
+  }
+
+  try {
+    const r = await fetch(`${WORKER_URL}/site-auth/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!r.ok) throw new Error("session_invalid");
+    const data = await r.json();
+    siteUser = data.user || null;
+    isAdmin = !!siteUser?.isAdmin;
+  } catch (_) {
+    localStorage.removeItem(SITE_SESSION_KEY);
+    siteUser = null;
+    isAdmin = false;
+  }
+  applyAuthUI();
+}
+
+function refPath(reference) {
+  const u = new URL(reference.toString());
+  return decodeURIComponent(u.pathname.replace(/^\/+|\/+$/g, "").replace(/\.json$/i, ""));
+}
+
+async function siteDbWrite(method, reference, value) {
+  const token = localStorage.getItem(SITE_SESSION_KEY);
+  if (!token) throw new Error("Потрібен вхід через Twitch.");
+
+  const r = await fetch(`${WORKER_URL}/site-db`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ method, path: refPath(reference), value })
+  });
+
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok || !data.ok) throw new Error(data.error || "Не вдалося зберегти зміни.");
+  return data.result;
+}
+
+const set = (reference, value) => siteDbWrite("PUT", reference, value);
+const update = (reference, value) => siteDbWrite("PATCH", reference, value);
+const remove = reference => siteDbWrite("DELETE", reference, null);
+
+
 const queueRef=ref(db,'queue');
 const list=document.getElementById('queueList');
 const addBtn=document.getElementById('addBtn');
 const authBtn=document.getElementById('authBtn');
 const authStatus=document.getElementById('authStatus');
+const logoutBtn=document.getElementById('logoutBtn');
 const addModal=document.getElementById('addModal');
 const dateModal=document.getElementById('dateModal');
 
-onAuthStateChanged(auth,user=>{
-  isAdmin=!!user&&user.uid===ADMIN_UID;
+function applyAuthUI(){
+  const loggedIn=!!siteUser;
   addBtn.style.display=isAdmin?'inline-block':'none';
-  authBtn.textContent=user?'Вийти':'Увійти';
-  authStatus.textContent=isAdmin?'Адмін увійшов':'';
+  authBtn.hidden=loggedIn;
+  logoutBtn.hidden=!loggedIn;
+  authStatus.innerHTML=loggedIn
+    ? `${siteUser.profileImageUrl?`<img src="${esc(siteUser.profileImageUrl)}" alt="" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:7px">`:''}<b>${esc(siteUser.displayName||siteUser.login)}</b>${isAdmin?' <span style="color:#ff8a18">• Адмін</span>':''}`
+    : '';
   render();
-});
+}
 
-authBtn.onclick=async()=>{
-  if(auth.currentUser){
-    await signOut(auth);
-    return;
-  }
-  const email=prompt('Email адміністратора:');
-  if(!email)return;
-  const password=prompt('Пароль:');
-  if(!password)return;
-  try{
-    await signInWithEmailAndPassword(auth,email,password);
-  }catch(e){
-    alert('Не вдалося увійти. Перевір email і пароль.');
-  }
-};
+authBtn.onclick=beginTwitchLogin;
+logoutBtn.onclick=siteLogout;
+initSiteAuth();
 
 onValue(queueRef,snap=>{
   const data=snap.val()||{};
