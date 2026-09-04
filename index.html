@@ -995,20 +995,60 @@ function speakRequestAnnouncement() {
         return;
       }
 
-      window.speechSynthesis.cancel();
+      const synth = window.speechSynthesis;
+      synth.cancel();
 
-      const utter = new SpeechSynthesisUtterance(RADIO_ANNOUNCEMENT);
-      utter.lang = "uk-UA";
-      utter.rate = 1;
-      utter.pitch = 1;
-      utter.volume = 1;
-      utter.onend = resolve;
-      utter.onerror = resolve;
+      const speakNow = () => {
+        const utter = new SpeechSynthesisUtterance(
+          "Перепрошую, але у нас пісню замовили"
+        );
 
-      window.speechSynthesis.speak(utter);
+        utter.lang = "uk-UA";
+        utter.rate = 0.95;
+        utter.pitch = 1;
+        utter.volume = 1;
 
-      // Запобіжник, якщо браузер не викличе onend.
-      setTimeout(resolve, 6500);
+        const voices = synth.getVoices();
+        const ukrainianVoice =
+          voices.find(v => /^uk-UA$/i.test(v.lang)) ||
+          voices.find(v => /^uk\b/i.test(v.lang)) ||
+          null;
+
+        if (ukrainianVoice) {
+          utter.voice = ukrainianVoice;
+        }
+
+        let finished = false;
+
+        const done = () => {
+          if (finished) return;
+          finished = true;
+          resolve();
+        };
+
+        utter.onend = done;
+        utter.onerror = done;
+
+        synth.speak(utter);
+
+        setTimeout(done, 7000);
+      };
+
+      if (synth.getVoices().length) {
+        speakNow();
+      } else {
+        let started = false;
+
+        const startOnce = () => {
+          if (started) return;
+          started = true;
+          synth.removeEventListener?.("voiceschanged", startOnce);
+          speakNow();
+        };
+
+        synth.addEventListener?.("voiceschanged", startOnce);
+        setTimeout(startOnce, 800);
+      }
     } catch (_) {
       resolve();
     }
