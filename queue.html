@@ -156,6 +156,25 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 .pos{background:#061424!important;border-color:rgba(19,184,255,.42)!important;color:var(--cyan)!important;box-shadow:inset 0 0 14px rgba(0,136,255,.08)}
 .badge{background:#07111d!important;border-color:rgba(19,184,255,.22)!important}
 
+
+/* ===== TMDb picker ===== */
+.tmdb-search-wrap{position:relative}
+.tmdb-results{display:flex;flex-direction:column;gap:10px;max-height:55vh;overflow:auto;margin-top:12px;padding-right:4px}
+.tmdb-result{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;background:#07111d;border:1px solid rgba(19,184,255,.24);padding:9px;color:#fff;cursor:pointer}
+.tmdb-result:hover{border-color:#13b8ff;box-shadow:0 0 18px rgba(19,184,255,.12)}
+.tmdb-result img,.tmdb-no-poster{width:58px;height:87px;object-fit:cover;background:#101722;border:1px solid rgba(19,184,255,.22)}
+.tmdb-no-poster{display:flex;align-items:center;justify-content:center;font-size:10px;color:#7f8b9d;text-align:center;padding:4px}
+.tmdb-result-title{font-weight:900;font-size:15px}
+.tmdb-result-sub{color:#8ea2b8;font-size:12px;margin-top:4px}
+.tmdb-result-overview{color:#7f8b9d;font-size:12px;line-height:1.35;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tmdb-pick{white-space:nowrap}
+.tmdb-hint{font-size:12px;color:#8ea2b8;margin-top:8px}
+@media(max-width:560px){
+  .tmdb-result{grid-template-columns:48px minmax(0,1fr)}
+  .tmdb-result img,.tmdb-no-poster{width:48px;height:72px}
+  .tmdb-pick{grid-column:1/-1;width:100%}
+}
+
 </style>
 
 <style>
@@ -218,6 +237,30 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
   </div>
 </div>
 
+
+<div id="tmdbModal" class="modal">
+  <div class="modal-card" style="max-width:720px">
+    <h3 style="margin-top:0">🎬 Уточнити фільм</h3>
+    <p class="sub" style="margin-bottom:14px">
+      Почни писати назву — нижче одразу з'являться варіанти з TMDb.
+    </p>
+
+    <div class="form-group tmdb-search-wrap">
+      <label>Назва фільму</label>
+      <input id="tmdbSearchInput" autocomplete="off" placeholder="Напр., Аватар">
+      <div class="tmdb-hint">Пошук запускається автоматично після короткої паузи.</div>
+    </div>
+
+    <div id="tmdbResults" class="tmdb-results">
+      <div class="empty" style="padding:20px 10px">Введи щонайменше 2 символи.</div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px">
+      <button id="cancelTmdb" class="btn outline">Скасувати</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
@@ -238,6 +281,9 @@ const db=getDatabase(app);
 let queue=[];
 let isAdmin=false;
 let selectedId=null;
+let tmdbMovieId=null;
+let tmdbSearchTimer=null;
+let tmdbSearchSerial=0;
 
 const WORKER_URL = "https://yevheniipel-movie-queue.shinewar06.workers.dev";
 const SITE_SESSION_KEY = "yevheniipel_twitch_session";
@@ -325,6 +371,9 @@ const authStatus=document.getElementById('authStatus');
 const logoutBtn=document.getElementById('logoutBtn');
 const addModal=document.getElementById('addModal');
 const dateModal=document.getElementById('dateModal');
+const tmdbModal=document.getElementById('tmdbModal');
+const tmdbSearchInput=document.getElementById('tmdbSearchInput');
+const tmdbResults=document.getElementById('tmdbResults');
 
 function applyAuthUI(){
   const loggedIn=!!siteUser;
@@ -382,10 +431,6 @@ function render(){
       ? `<img class="poster" src="${esc(m.posterUrl)}" alt="Постер ${esc(displayTitle)}" loading="lazy">`
       : `<div class="poster-placeholder">Постер не знайдено</div>`;
 
-    const canEditTitle =
-      isAdmin ||
-      (siteUser && String(m.twitchUserId || '') === String(siteUser.id || ''));
-
     return `
       <article class="queue-item">
         <div class="pos">${i+1}</div>
@@ -401,70 +446,154 @@ function render(){
           </div>
           ${overview?`<div class="overview">${esc(overview)}</div>`:''}
         </div>
-        ${(canEditTitle || isAdmin)?`
+        ${((siteUser && String(m.twitchUserId||'')===String(siteUser.id||'')) || isAdmin)?`
           <div class="actions">
-            ${canEditTitle?`<button class="mini" onclick="editMovieTitle('${m.id}')">✏️ Редагувати</button>`:''}
-            ${isAdmin?`<div class="move-buttons">
-              <button class="mini" onclick="moveItem('${m.id}',-1)" title="Підняти вище">↑</button>
-              <button class="mini" onclick="moveItem('${m.id}',1)" title="Опустити нижче">↓</button>
-            </div>
-            <button class="mini" onclick="assignDate('${m.id}')">📅 Дата</button>
-            <button class="mini danger" onclick="deleteItem('${m.id}')">✕</button>`:''}
+            <button class="mini" onclick="openTmdbPicker('${m.id}')">✏️ Уточнити фільм</button>
+            ${isAdmin?`
+              <div class="move-buttons">
+                <button class="mini" onclick="moveItem('${m.id}',-1)" title="Підняти вище">↑</button>
+                <button class="mini" onclick="moveItem('${m.id}',1)" title="Опустити нижче">↓</button>
+              </div>
+              <button class="mini" onclick="assignDate('${m.id}')">📅 Дата</button>
+              <button class="mini danger" onclick="deleteItem('${m.id}')">✕</button>
+            `:''}
           </div>`:''}
       </article>`;
   }).join('');
 }
 
-window.editMovieTitle=async id=>{
-  if(!siteUser){
-    alert('Спочатку увійдіть через Twitch.');
-    return;
-  }
 
+function closeTmdbPicker(){
+  tmdbModal.classList.remove('active');
+  tmdbMovieId=null;
+  tmdbSearchInput.value='';
+  tmdbResults.innerHTML='<div class="empty" style="padding:20px 10px">Введи щонайменше 2 символи.</div>';
+  if(tmdbSearchTimer) clearTimeout(tmdbSearchTimer);
+}
+
+window.openTmdbPicker=id=>{
   const movie=queue.find(x=>x.id===id);
-  if(!movie)return;
+  if(!movie || !siteUser)return;
 
-  const allowed=isAdmin || String(movie.twitchUserId||'')===String(siteUser.id||'');
-  if(!allowed){
-    alert('Ви можете редагувати лише свій фільм.');
+  const canEdit=isAdmin || String(movie.twitchUserId||'')===String(siteUser.id||'');
+  if(!canEdit)return;
+
+  tmdbMovieId=id;
+  tmdbModal.classList.add('active');
+  tmdbSearchInput.value=movie.title||movie.tmdbTitle||'';
+  tmdbSearchInput.focus();
+  tmdbSearchInput.select();
+
+  if(tmdbSearchInput.value.trim().length>=2){
+    runTmdbSearch(tmdbSearchInput.value.trim());
+  }
+};
+
+document.getElementById('cancelTmdb').onclick=closeTmdbPicker;
+
+tmdbModal.addEventListener('click',e=>{
+  if(e.target===tmdbModal) closeTmdbPicker();
+});
+
+tmdbSearchInput.addEventListener('input',()=>{
+  const q=tmdbSearchInput.value.trim();
+  if(tmdbSearchTimer) clearTimeout(tmdbSearchTimer);
+
+  if(q.length<2){
+    tmdbResults.innerHTML='<div class="empty" style="padding:20px 10px">Введи щонайменше 2 символи.</div>';
     return;
   }
 
-  const entered=prompt('Введіть нову назву фільму:', movie.title||movie.tmdbTitle||'');
-  if(entered===null)return;
+  tmdbResults.innerHTML='<div class="empty" style="padding:20px 10px">🔎 Шукаю…</div>';
+  tmdbSearchTimer=setTimeout(()=>runTmdbSearch(q),350);
+});
 
-  const title=entered.trim();
-  if(!title){
-    alert('Назва фільму не може бути порожньою.');
-    return;
+async function runTmdbSearch(q){
+  const serial=++tmdbSearchSerial;
+
+  try{
+    const r=await fetch(`${WORKER_URL}/tmdb/search?q=${encodeURIComponent(q)}`);
+    const data=await r.json().catch(()=>({}));
+
+    if(serial!==tmdbSearchSerial)return;
+
+    if(!r.ok || !data.ok){
+      throw new Error(data.error||'Не вдалося виконати пошук.');
+    }
+
+    const results=Array.isArray(data.results)?data.results:[];
+
+    if(!results.length){
+      tmdbResults.innerHTML='<div class="empty" style="padding:20px 10px">Нічого не знайдено. Спробуй іншу назву.</div>';
+      return;
+    }
+
+    tmdbResults.innerHTML=results.map(movie=>{
+      const poster=movie.posterUrl
+        ? `<img src="${esc(movie.posterUrl)}" alt="">`
+        : `<div class="tmdb-no-poster">Без постера</div>`;
+
+      const original=movie.originalTitle && movie.originalTitle!==movie.title
+        ? `<div class="tmdb-result-sub">${esc(movie.originalTitle)}</div>`
+        : '';
+
+      return `
+        <button type="button" class="tmdb-result" onclick="selectTmdbMovie('${String(movie.tmdbId)}')">
+          ${poster}
+          <span>
+            <span class="tmdb-result-title">${esc(movie.title||'Без назви')}${movie.year?` (${esc(movie.year)})`:''}</span>
+            ${original}
+            ${movie.overview?`<span class="tmdb-result-overview">${esc(movie.overview)}</span>`:''}
+          </span>
+          <span class="mini tmdb-pick">Обрати</span>
+        </button>
+      `;
+    }).join('');
+
+  }catch(err){
+    console.error(err);
+    if(serial!==tmdbSearchSerial)return;
+    tmdbResults.innerHTML=`<div class="empty" style="padding:20px 10px">⚠️ ${esc(err.message||'Помилка пошуку')}</div>`;
   }
+}
+
+window.selectTmdbMovie=async tmdbId=>{
+  if(!tmdbMovieId || !siteUser)return;
 
   const token=localStorage.getItem(SITE_SESSION_KEY);
   if(!token){
-    alert('Сесія Twitch відсутня. Увійдіть ще раз.');
+    alert('Сесія Twitch завершилась. Увійди ще раз.');
     return;
   }
 
+  const buttons=tmdbResults.querySelectorAll('button');
+  buttons.forEach(b=>b.disabled=true);
+
   try{
-    const response=await fetch(`${WORKER_URL}/movie/edit-title`,{
+    const r=await fetch(`${WORKER_URL}/movie/select-tmdb`,{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
         'Authorization':`Bearer ${token}`
       },
-      body:JSON.stringify({movieId:id,title})
+      body:JSON.stringify({
+        movieId:tmdbMovieId,
+        tmdbId
+      })
     });
 
-    const data=await response.json().catch(()=>({}));
-    if(!response.ok || !data.ok){
-      alert(data.error||'Не вдалося оновити фільм.');
-      return;
+    const data=await r.json().catch(()=>({}));
+
+    if(!r.ok || !data.ok){
+      throw new Error(data.error||'Не вдалося вибрати фільм.');
     }
 
-    alert('✅ Назву, постер, рік та опис оновлено з TMDb.');
-  }catch(error){
-    console.error(error);
-    alert('Помилка з’єднання з сервером.');
+    closeTmdbPicker();
+
+  }catch(err){
+    console.error(err);
+    alert(err.message||'Не вдалося вибрати фільм.');
+    buttons.forEach(b=>b.disabled=false);
   }
 };
 
