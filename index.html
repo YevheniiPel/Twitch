@@ -343,8 +343,7 @@ body.menu-open{overflow:hidden}
 .site-user-badge{display:inline-flex;align-items:center;gap:8px;color:#eaf6ff;font-weight:700;white-space:nowrap}.site-user-badge img{box-shadow:0 0 0 1px rgba(19,184,255,.45)}
 
 /* ===== BIG PULSING TWITCH CTA ===== */
-.hero .twitch-cta,
-.hero a[href*="twitch.tv"]{
+.hero .twitch-cta{
   position:relative;
   min-width:320px;
   min-height:88px;
@@ -366,8 +365,7 @@ body.menu-open{overflow:hidden}
   z-index:2;
 }
 
-.hero .twitch-cta::before,
-.hero a[href*="twitch.tv"]::before{
+.hero .twitch-cta::before{
   content:"";
   position:absolute;
   inset:-12px;
@@ -378,8 +376,7 @@ body.menu-open{overflow:hidden}
   pointer-events:none;
 }
 
-.hero .twitch-cta:hover,
-.hero a[href*="twitch.tv"]:hover{
+.hero .twitch-cta:hover{
   transform:scale(1.06);
   filter:brightness(1.08);
   box-shadow:
@@ -399,8 +396,7 @@ body.menu-open{overflow:hidden}
 }
 
 @media(max-width:700px){
-  .hero .twitch-cta,
-  .hero a[href*="twitch.tv"]{
+  .hero .twitch-cta{
     min-width:100%;
     min-height:76px;
     font-size:19px;
@@ -410,9 +406,7 @@ body.menu-open{overflow:hidden}
 
 @media (prefers-reduced-motion: reduce){
   .hero .twitch-cta,
-  .hero a[href*="twitch.tv"],
-  .hero .twitch-cta::before,
-  .hero a[href*="twitch.tv"]::before{
+  .hero .twitch-cta::before{
     animation:none !important;
   }
 }
@@ -442,7 +436,7 @@ body.menu-open{overflow:hidden}
     <button id="adminLoginBtn" class="btn outline admin-auth-btn" type="button">Увійти через Twitch</button>
     <span id="siteUserBadge" class="site-user-badge" hidden></span>
     <button id="adminLogoutBtn" class="btn outline admin-auth-btn" type="button" hidden>Вийти</button>
-    <a class="btn outline twitch-cta" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
+    <a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
   </div>
 </header>
 
@@ -465,7 +459,7 @@ body.menu-open{overflow:hidden}
     <a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
   </div>
 </aside>
-<main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Євгеній.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
+<main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Євгеній.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue twitch-cta" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
 <section class="stats"><div><b>01</b><small>Стрімер</small></div><div><b>∞</b><small>Ідей</small></div><div><b>100%</b><small>Живого контенту</small></div></section>
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Євгеній.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
 <section id="content" class="section"><div class="label">02 / КОНТЕНТ</div><h2>Що будемо <span>робити?</span></h2><div class="cards"><a class="card card-link" href="https://steamcommunity.com/id/ShineWarYouTube/" target="_blank" rel="noopener noreferrer"><div class="icon">🎮</div><h3>Ігри</h3><p>Різні ігри, живий чат і моменти, які народжуються прямо на стрімі.</p><div class="card-go">Мій Steam →</div></a><a class="card card-link" href="calendar.html"><div class="icon">🎬</div><h3>Фільми & шоу</h3><p>Спільні перегляди та вечори з хорошим кіно і компанією.</p><div class="card-go">Календар кіновечорів →</div></a><a class="card card-link" href="https://t.me/ZhenyaTwitch" target="_blank" rel="noopener noreferrer"><div class="icon">💬</div><h3>Just Chatting</h3><p>Розмови, історії, новини та все, що хочеться обговорити.</p><div class="card-go">Telegram →</div></a></div></section>
