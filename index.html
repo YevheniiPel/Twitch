@@ -990,66 +990,31 @@ async function adminPrev() {
 function speakRequestAnnouncement() {
   return new Promise(resolve => {
     try {
-      if (!("speechSynthesis" in window)) {
+      const audio = new Audio("song-request.mp3");
+      audio.preload = "auto";
+      audio.volume = 1;
+
+      let finished = false;
+
+      const done = () => {
+        if (finished) return;
+        finished = true;
+        audio.pause();
         resolve();
-        return;
-      }
-
-      const synth = window.speechSynthesis;
-      synth.cancel();
-
-      const speakNow = () => {
-        const utter = new SpeechSynthesisUtterance(
-          "Перепрошую, але у нас пісню замовили"
-        );
-
-        utter.lang = "uk-UA";
-        utter.rate = 0.95;
-        utter.pitch = 1;
-        utter.volume = 1;
-
-        const voices = synth.getVoices();
-        const ukrainianVoice =
-          voices.find(v => /^uk-UA$/i.test(v.lang)) ||
-          voices.find(v => /^uk\b/i.test(v.lang)) ||
-          null;
-
-        if (ukrainianVoice) {
-          utter.voice = ukrainianVoice;
-        }
-
-        let finished = false;
-
-        const done = () => {
-          if (finished) return;
-          finished = true;
-          resolve();
-        };
-
-        utter.onend = done;
-        utter.onerror = done;
-
-        synth.speak(utter);
-
-        setTimeout(done, 7000);
       };
 
-      if (synth.getVoices().length) {
-        speakNow();
-      } else {
-        let started = false;
+      audio.addEventListener("ended", done, { once: true });
+      audio.addEventListener("error", done, { once: true });
 
-        const startOnce = () => {
-          if (started) return;
-          started = true;
-          synth.removeEventListener?.("voiceschanged", startOnce);
-          speakNow();
-        };
+      audio.play().catch(err => {
+        console.error("Не вдалося відтворити song-request.mp3:", err);
+        done();
+      });
 
-        synth.addEventListener?.("voiceschanged", startOnce);
-        setTimeout(startOnce, 800);
-      }
-    } catch (_) {
+      // Запобіжник, якщо браузер не поверне ended/error.
+      setTimeout(done, 15000);
+    } catch (err) {
+      console.error("Помилка голосового оголошення:", err);
       resolve();
     }
   });
