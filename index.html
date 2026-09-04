@@ -341,6 +341,82 @@ body.menu-open{overflow:hidden}
 
 
 .site-user-badge{display:inline-flex;align-items:center;gap:8px;color:#eaf6ff;font-weight:700;white-space:nowrap}.site-user-badge img{box-shadow:0 0 0 1px rgba(19,184,255,.45)}
+
+/* ===== BIG PULSING TWITCH CTA ===== */
+.hero .twitch-cta,
+.hero a[href*="twitch.tv"]{
+  position:relative;
+  min-width:320px;
+  min-height:88px;
+  padding:0 34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:.2px;
+  transform:translateZ(0);
+  box-shadow:
+    0 0 0 0 rgba(19,184,255,.55),
+    0 0 28px rgba(19,184,255,.35),
+    inset 0 0 18px rgba(255,255,255,.08);
+  animation:twitchPulse 1.8s ease-in-out infinite;
+  transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  z-index:2;
+}
+
+.hero .twitch-cta::before,
+.hero a[href*="twitch.tv"]::before{
+  content:"";
+  position:absolute;
+  inset:-12px;
+  border:2px solid rgba(19,184,255,.45);
+  clip-path:inherit;
+  opacity:.9;
+  animation:twitchRing 1.8s ease-out infinite;
+  pointer-events:none;
+}
+
+.hero .twitch-cta:hover,
+.hero a[href*="twitch.tv"]:hover{
+  transform:scale(1.06);
+  filter:brightness(1.08);
+  box-shadow:
+    0 0 0 10px rgba(19,184,255,.08),
+    0 0 42px rgba(19,184,255,.6),
+    inset 0 0 20px rgba(255,255,255,.12);
+}
+
+@keyframes twitchPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(19,184,255,.50),0 0 24px rgba(19,184,255,.32),inset 0 0 18px rgba(255,255,255,.08)}
+  50%{transform:scale(1.045);box-shadow:0 0 0 12px rgba(19,184,255,0),0 0 46px rgba(19,184,255,.62),inset 0 0 22px rgba(255,255,255,.12)}
+}
+
+@keyframes twitchRing{
+  0%{transform:scale(.96);opacity:.75}
+  70%,100%{transform:scale(1.12);opacity:0}
+}
+
+@media(max-width:700px){
+  .hero .twitch-cta,
+  .hero a[href*="twitch.tv"]{
+    min-width:100%;
+    min-height:76px;
+    font-size:19px;
+    padding:0 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .hero .twitch-cta,
+  .hero a[href*="twitch.tv"],
+  .hero .twitch-cta::before,
+  .hero a[href*="twitch.tv"]::before{
+    animation:none !important;
+  }
+}
+
 </style>
 <style>
 [hidden] { display: none !important; }
@@ -366,7 +442,7 @@ body.menu-open{overflow:hidden}
     <button id="adminLoginBtn" class="btn outline admin-auth-btn" type="button">Увійти через Twitch</button>
     <span id="siteUserBadge" class="site-user-badge" hidden></span>
     <button id="adminLogoutBtn" class="btn outline admin-auth-btn" type="button" hidden>Вийти</button>
-    <a class="btn outline" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
+    <a class="btn outline twitch-cta" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
   </div>
 </header>
 
