@@ -122,13 +122,266 @@ input:focus,select:focus{border-color:var(--cyan)!important;box-shadow:0 0 0 2px
 <style>
 [hidden] { display: none !important; }
 </style>
+<style>
+/* ===== UNIFIED SITE NAVIGATION ===== */
+.site-nav-v2{
+  position:sticky;
+  top:0;
+  z-index:120;
+  min-height:72px;
+  padding:0 5%;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  background:rgba(2,8,15,.88);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(19,184,255,.18);
+  box-shadow:0 10px 35px rgba(0,0,0,.18);
+}
+.site-nav-v2 .site-logo{
+  flex:0 0 auto;
+  text-decoration:none;
+  color:#f7fbff;
+  font-weight:1000;
+  font-size:21px;
+  letter-spacing:-.8px;
+}
+.site-nav-v2 .site-logo span{color:var(--cyan,#13b8ff)}
+.site-desktop-links{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  flex:1;
+}
+.site-desktop-links a{
+  position:relative;
+  padding:10px 10px;
+  text-decoration:none;
+  color:#92a3b5;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+  transition:.18s ease;
+}
+.site-desktop-links a:hover,
+.site-desktop-links a.active{
+  color:#fff;
+}
+.site-desktop-links a:after{
+  content:"";
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:4px;
+  height:2px;
+  transform:scaleX(0);
+  transform-origin:center;
+  background:var(--cyan,#13b8ff);
+  box-shadow:0 0 12px var(--cyan,#13b8ff);
+  transition:.18s ease;
+}
+.site-desktop-links a:hover:after,
+.site-desktop-links a.active:after{transform:scaleX(1)}
+
+.site-nav-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+.site-nav-actions .site-auth-slot{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.site-menu-btn{
+  display:none;
+  width:44px;
+  height:44px;
+  padding:0;
+  border:1px solid rgba(19,184,255,.28);
+  background:rgba(5,14,24,.88);
+  cursor:pointer;
+  place-items:center;
+}
+.site-menu-btn-inner{
+  width:20px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.site-menu-btn-inner span{
+  display:block;
+  height:2px;
+  width:100%;
+  background:#d9e7f3;
+  transition:.22s ease;
+}
+.site-menu-btn[aria-expanded="true"] .site-menu-btn-inner span:nth-child(1){
+  transform:translateY(6px) rotate(45deg);
+}
+.site-menu-btn[aria-expanded="true"] .site-menu-btn-inner span:nth-child(2){opacity:0}
+.site-menu-btn[aria-expanded="true"] .site-menu-btn-inner span:nth-child(3){
+  transform:translateY(-6px) rotate(-45deg);
+}
+
+.site-mobile-overlay{
+  position:fixed;
+  inset:0;
+  z-index:118;
+  background:rgba(0,0,0,.62);
+  opacity:0;
+  pointer-events:none;
+  transition:.22s ease;
+}
+.site-mobile-overlay.open{opacity:1;pointer-events:auto}
+.site-mobile-drawer{
+  position:fixed;
+  z-index:119;
+  top:0;
+  right:0;
+  height:100dvh;
+  width:min(360px,88vw);
+  padding:92px 20px 28px;
+  transform:translateX(105%);
+  transition:transform .26s ease;
+  background:
+    linear-gradient(180deg,rgba(5,16,27,.99),rgba(2,7,13,.99));
+  border-left:1px solid rgba(19,184,255,.25);
+  box-shadow:-18px 0 45px rgba(0,0,0,.35);
+  overflow-y:auto;
+}
+.site-mobile-drawer.open{transform:none}
+body.site-menu-open{overflow:hidden}
+.site-mobile-links{
+  display:grid;
+  gap:7px;
+}
+.site-mobile-links a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:48px;
+  padding:0 14px;
+  text-decoration:none;
+  color:#a9bac9;
+  font-size:14px;
+  font-weight:850;
+  border:1px solid rgba(19,184,255,.10);
+  background:rgba(255,255,255,.015);
+}
+.site-mobile-links a:after{content:"›";color:var(--cyan,#13b8ff);font-size:20px}
+.site-mobile-links a:hover,
+.site-mobile-links a.active{
+  color:#fff;
+  border-color:rgba(19,184,255,.36);
+  background:rgba(19,184,255,.06);
+}
+.site-mobile-auth{
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid rgba(19,184,255,.15);
+  display:grid;
+  gap:10px;
+}
+.site-mobile-auth .btn{width:100%;justify-content:center}
+.site-mobile-user{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#dce8f3;
+  font-size:13px;
+  min-height:36px;
+}
+.site-mobile-user img{
+  width:30px!important;
+  height:30px!important;
+  border-radius:50%;
+  object-fit:cover;
+}
+.site-mobile-twitch{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  text-decoration:none;
+  border:1px solid rgba(145,71,255,.5);
+  color:#fff;
+  background:rgba(145,71,255,.11);
+  font-weight:900;
+  font-size:13px;
+}
+
+@media(max-width:1100px){
+  .site-desktop-links{gap:0}
+  .site-desktop-links a{padding-left:7px;padding-right:7px;font-size:11px}
+}
+@media(max-width:900px){
+  .site-nav-v2{
+    min-height:64px;
+    padding:0 14px;
+    justify-content:space-between;
+  }
+  .site-desktop-links,
+  .site-nav-actions .site-auth-slot,
+  .site-nav-actions > .site-twitch-desktop{display:none!important}
+  .site-menu-btn{display:grid}
+}
+@media(max-width:420px){
+  .site-nav-v2 .site-logo{font-size:19px}
+  .site-mobile-drawer{width:92vw}
+}
+</style>
 </head>
 <body>
-<header class="nav">
-<a class="logo" href="index.html">Yevhenii<span>Pel</span></a>
-<nav><a href="index.html#about">Про мене</a><a href="index.html#content">Контент</a><a href="index.html#schedule">Розклад</a><a href="calendar.html" class="active">Календар</a><a href="index.html#socials">Соцмережі</a></nav>
-<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button id="loginBtn" class="btn outline">Увійти через Twitch</button><span id="authStatus" class="auth-status"></span><button id="logoutBtn" class="btn outline" hidden>Вийти</button></div>
+
+<header class="site-nav-v2">
+  <a class="site-logo" href="index.html">Yevhenii<span>Pel</span></a>
+
+  <nav class="site-desktop-links" aria-label="Основна навігація">
+    <a href="index.html" data-site-page="index.html">Головна</a>
+    <a href="index.html#about">Про мене</a>
+    <a href="index.html#content">Контент</a>
+    <a href="index.html#music">Музика</a>
+    <a href="index.html#schedule">Розклад</a>
+    <a href="calendar.html" data-site-page="calendar.html" class="active">Календар</a>
+    <a href="index.html#socials">Соцмережі</a>
+  </nav>
+
+  <div class="site-nav-actions">
+    <div class="site-auth-slot">
+      <button id="loginBtn" class="btn outline" type="button">Увійти через Twitch</button>
+      <span id="authStatus" class="status"></span>
+      <button id="logoutBtn" class="btn outline" type="button" hidden>Вийти</button>
+    </div>
+    <a class="btn outline site-twitch-desktop" href="https://www.twitch.tv/yevheniipel" target="_blank" rel="noopener">Twitch ↗</a>
+    <button class="site-menu-btn" id="siteMenuBtn" type="button" aria-label="Відкрити меню" aria-expanded="false">
+      <span class="site-menu-btn-inner"><span></span><span></span><span></span></span>
+    </button>
+  </div>
 </header>
+
+<div class="site-mobile-overlay" id="siteMobileOverlay"></div>
+<aside class="site-mobile-drawer" id="siteMobileDrawer" aria-hidden="true">
+  <nav class="site-mobile-links" aria-label="Мобільна навігація">
+    <a href="index.html" data-site-page="index.html">Головна</a>
+    <a href="index.html#about">Про мене</a>
+    <a href="index.html#content">Контент</a>
+    <a href="index.html#music">Музика</a>
+    <a href="index.html#schedule">Розклад</a>
+    <a href="calendar.html" data-site-page="calendar.html">Календар</a>
+    <a href="index.html#socials">Соцмережі</a>
+  </nav>
+  <div class="site-mobile-auth">
+    <div id="siteMobileUser" class="site-mobile-user" hidden></div>
+    <button id="siteMobileLogin" class="btn outline" type="button">Увійти через Twitch</button>
+    <button id="siteMobileLogout" class="btn outline" type="button" hidden>Вийти</button>
+    <a class="site-mobile-twitch" href="https://www.twitch.tv/yevheniipel" target="_blank" rel="noopener">Відкрити Twitch ↗</a>
+  </div>
+</aside>
+
 <main class="container">
 <div class="header-actions"><div><h1 class="section-title">Календар <span>кіновечорів</span></h1></div><div class="header-buttons"><a class="queue-btn" href="queue.html">🎬 Черга фільмів</a><button class="btn blue admin-only" onclick="openAddModal()">+ Додати фільм</button></div></div>
 <p class="click-hint">Натисни на фільм у календарі, щоб відкрити деталі.</p>
@@ -354,5 +607,82 @@ $('deleteMovieBtn').onclick=async()=>{if(!isAdmin||!selectedMovieId)return;if(co
 $('addForm').addEventListener('submit',async e=>{e.preventDefault();if(!isAdmin)return;let photoData=null;const f=$('addPhoto').files?.[0];try{if(f)photoData=await compressImage(f);const nr=push(moviesRef);await set(nr,{title:$('addTitle').value.trim(),requester:$('addRequester').value.trim(),date:$('addDate').value,status:$('addStatus').value,photoData:photoData||null,createdAt:Date.now()});window.closeAddModal();}catch(err){alert(err.message||'Не вдалося зберегти фільм.');}});
 
 </script>
+
+<script>
+(() => {
+  const btn = document.getElementById("siteMenuBtn");
+  const drawer = document.getElementById("siteMobileDrawer");
+  const overlay = document.getElementById("siteMobileOverlay");
+  const mobileLogin = document.getElementById("siteMobileLogin");
+  const mobileLogout = document.getElementById("siteMobileLogout");
+  const mobileUser = document.getElementById("siteMobileUser");
+
+  if (!btn || !drawer || !overlay) return;
+
+  const close = () => {
+    drawer.classList.remove("open");
+    overlay.classList.remove("open");
+    document.body.classList.remove("site-menu-open");
+    btn.setAttribute("aria-expanded","false");
+    drawer.setAttribute("aria-hidden","true");
+  };
+  const open = () => {
+    drawer.classList.add("open");
+    overlay.classList.add("open");
+    document.body.classList.add("site-menu-open");
+    btn.setAttribute("aria-expanded","true");
+    drawer.setAttribute("aria-hidden","false");
+  };
+
+  btn.addEventListener("click", () => drawer.classList.contains("open") ? close() : open());
+  overlay.addEventListener("click", close);
+  drawer.querySelectorAll("a").forEach(a => a.addEventListener("click", close));
+  document.addEventListener("keydown", e => { if(e.key === "Escape") close(); });
+
+  const desktopLogin =
+    document.getElementById("adminLoginBtn") ||
+    document.getElementById("authBtn") ||
+    document.getElementById("loginBtn");
+
+  const desktopLogout =
+    document.getElementById("adminLogoutBtn") ||
+    document.getElementById("logoutBtn");
+
+  const desktopUser =
+    document.getElementById("siteUserBadge") ||
+    document.getElementById("authStatus");
+
+  mobileLogin?.addEventListener("click", () => {
+    close();
+    desktopLogin?.click();
+  });
+  mobileLogout?.addEventListener("click", () => {
+    close();
+    desktopLogout?.click();
+  });
+
+  function syncAuth(){
+    const loggedIn = desktopLogout ? !desktopLogout.hidden : false;
+
+    if(mobileLogin) mobileLogin.hidden = loggedIn;
+    if(mobileLogout) mobileLogout.hidden = !loggedIn;
+
+    if(mobileUser){
+      const html = desktopUser?.innerHTML?.trim() || desktopUser?.textContent?.trim() || "";
+      mobileUser.hidden = !loggedIn || !html;
+      if(html) mobileUser.innerHTML = html;
+    }
+  }
+
+  syncAuth();
+  setInterval(syncAuth, 400);
+
+  const current = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll("[data-site-page]").forEach(a => {
+    if(a.dataset.sitePage === current) a.classList.add("active");
+  });
+})();
+</script>
+
 </body>
 </html>
