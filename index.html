@@ -1065,9 +1065,9 @@ body.site-menu-open{overflow:hidden}
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:0;
-  filter:blur(5px);
+  filter:blur(5px) brightness(1.18) saturate(1.08);
   transform:scale(1.025);
-  opacity:.38;
+  opacity:.58;
 }
 .site-photo-grid img{
   width:100%;
@@ -1083,7 +1083,7 @@ body.site-menu-open{overflow:hidden}
   background:
     radial-gradient(circle at 18% 18%,rgba(88,168,255,.14),transparent 34%),
     radial-gradient(circle at 85% 28%,rgba(255,132,65,.08),transparent 28%),
-    linear-gradient(180deg,rgba(4,7,11,.44),rgba(4,7,11,.58) 48%,rgba(4,7,11,.72));
+    linear-gradient(180deg,rgba(4,7,11,.24),rgba(4,7,11,.36) 48%,rgba(4,7,11,.52));
 }
 .site-content{position:relative;z-index:1;min-height:100vh}
 /* Робимо великі площини трохи прозорими, щоб фото були помітні, але не заважали тексту */
@@ -1093,11 +1093,11 @@ body.site-menu-open{overflow:hidden}
 .card,.yt-card,.now-card,.music-admin,.social{background:rgba(13,17,24,.88);backdrop-filter:blur(7px)}
 .cta{background:linear-gradient(120deg,rgba(14,24,36,.92),rgba(9,12,17,.94))}
 @media(max-width:900px){
-  .site-photo-grid{grid-template-columns:repeat(3,1fr);opacity:.34}
+  .site-photo-grid{grid-template-columns:repeat(3,1fr);opacity:.52}
   .site-photo-grid img:nth-child(4),.site-photo-grid img:nth-child(5){display:none}
 }
 @media(max-width:600px){
-  .site-photo-grid{grid-template-columns:repeat(2,1fr);opacity:.30;filter:blur(5px)}
+  .site-photo-grid{grid-template-columns:repeat(2,1fr);opacity:.48;filter:blur(5px)}
   .site-photo-grid img:nth-child(3){display:none}
 }
 </style></head><body>
