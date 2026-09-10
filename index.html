@@ -689,6 +689,123 @@ body.menu-open{overflow:hidden}
   border-color:rgba(255,64,87,.45)!important;
 }
 
+
+/* ===== HOME v6 — MOVIE SPOTLIGHT ===== */
+.movie-spotlight{
+  margin:34px 7% 0;
+  display:grid;
+  grid-template-columns:180px minmax(0,1fr);
+  gap:24px;
+  align-items:stretch;
+  padding:18px;
+  background:linear-gradient(145deg,rgba(8,18,31,.97),rgba(3,9,17,.97));
+  border:1px solid rgba(19,184,255,.24);
+  box-shadow:0 16px 46px rgba(0,0,0,.32),inset 0 0 28px rgba(0,109,255,.035);
+  clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px);
+}
+.movie-spotlight-poster{
+  width:100%;
+  aspect-ratio:2/3;
+  object-fit:cover;
+  background:#07101b;
+  border:1px solid rgba(19,184,255,.3);
+}
+.movie-spotlight-placeholder{
+  width:100%;
+  aspect-ratio:2/3;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:16px;
+  color:#6f8397;
+  background:#07101b;
+  border:1px solid rgba(19,184,255,.22);
+  font-size:12px;
+}
+.movie-spotlight-main{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.movie-spotlight-label{
+  color:var(--orange);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+.movie-spotlight-title{
+  margin:0;
+  font-size:clamp(26px,3vw,42px);
+  line-height:1;
+  letter-spacing:-1.5px;
+}
+.movie-spotlight-meta{
+  margin-top:12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.movie-spotlight-chip{
+  display:inline-flex;
+  align-items:center;
+  padding:7px 9px;
+  border:1px solid rgba(19,184,255,.24);
+  background:rgba(4,12,21,.68);
+  color:#a9bac9;
+  font-size:11px;
+}
+.movie-spotlight-chip.requester{
+  border-color:rgba(255,138,24,.26);
+  color:#ffc187;
+}
+.movie-spotlight-overview{
+  margin-top:16px;
+  color:#8fa1b3;
+  line-height:1.65;
+  font-size:13px;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  max-width:760px;
+}
+.movie-spotlight-actions{
+  margin-top:auto;
+  padding-top:18px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.movie-spotlight-empty{
+  grid-column:1/-1;
+  padding:20px;
+  color:#7f92a5;
+  text-align:center;
+}
+@media(max-width:760px){
+  .movie-spotlight{
+    margin-left:5%;
+    margin-right:5%;
+    grid-template-columns:110px minmax(0,1fr);
+    gap:14px;
+    padding:12px;
+  }
+  .movie-spotlight-title{font-size:24px}
+  .movie-spotlight-overview{-webkit-line-clamp:2}
+}
+@media(max-width:520px){
+  .movie-spotlight{
+    grid-template-columns:1fr;
+  }
+  .movie-spotlight-poster,
+  .movie-spotlight-placeholder{
+    max-width:180px;
+    margin:0 auto;
+  }
+}
+
 </style>
 <style>
 [hidden] { display: none !important; }
@@ -787,7 +904,13 @@ body.menu-open{overflow:hidden}
     <div class="home-info-value" id="homeQueueCount">Завантаження…</div>
     <div class="home-info-sub" id="homeQueueSub">Перевірити замовлення глядачів</div>
   </a>
+
 </section>
+
+<section class="movie-spotlight" id="movieSpotlight">
+  <div class="movie-spotlight-empty">Завантажую найближчий кіновечір…</div>
+</section>
+
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Євгеній.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
 <section id="content" class="section"><div class="label">02 / КОНТЕНТ</div><h2>Що будемо <span>робити?</span></h2><div class="cards"><a class="card card-link" href="https://steamcommunity.com/id/ShineWarYouTube/" target="_blank" rel="noopener noreferrer"><div class="icon">🎮</div><h3>Ігри</h3><p>Різні ігри, живий чат і моменти, які народжуються прямо на стрімі.</p><div class="card-go">Мій Steam →</div></a><a class="card card-link" href="calendar.html"><div class="icon">🎬</div><h3>Фільми & шоу</h3><p>Спільні перегляди та вечори з хорошим кіно і компанією.</p><div class="card-go">Календар кіновечорів →</div></a><a class="card card-link" href="https://t.me/ZhenyaTwitch" target="_blank" rel="noopener noreferrer"><div class="icon">💬</div><h3>Just Chatting</h3><p>Розмови, історії, новини та все, що хочеться обговорити.</p><div class="card-go">Telegram →</div></a></div></section>
 
@@ -1845,6 +1968,7 @@ function normalizeMovieDate(value){
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+
 onValue(moviesRef, snap=>{
   const raw = snap.val() || {};
   const today = new Date();
@@ -1857,25 +1981,74 @@ onValue(moviesRef, snap=>{
 
   const titleEl = document.getElementById("homeNextMovie");
   const subEl = document.getElementById("homeNextMovieSub");
-  if(!titleEl || !subEl) return;
+  const spotlight = document.getElementById("movieSpotlight");
 
   if(!upcoming.length){
-    titleEl.textContent = "Поки не заплановано";
-    subEl.textContent = "Переглянути календар кіновечорів";
+    if(titleEl) titleEl.textContent = "Поки не заплановано";
+    if(subEl) subEl.textContent = "Переглянути календар кіновечорів";
     const heroMovie = document.getElementById("heroMovieStatus");
     if(heroMovie) heroMovie.textContent = "Кіновечір: поки не заплановано";
+    if(spotlight){
+      spotlight.innerHTML = `
+        <div class="movie-spotlight-empty">
+          🎬 Найближчий кіновечір поки не заплановано.
+          <div style="margin-top:12px">
+            <a class="btn outline" href="calendar.html">Відкрити календар</a>
+          </div>
+        </div>`;
+    }
     return;
   }
 
   const movie = upcoming[0];
-  titleEl.textContent = movie.tmdbTitle || movie.title || "Кіновечір";
+  const movieTitle = movie.tmdbTitle || movie.title || "Кіновечір";
   const movieDateText = movie._date.toLocaleDateString("uk-UA",{
-    weekday:"short", day:"numeric", month:"long"
+    weekday:"long", day:"numeric", month:"long"
   });
-  subEl.textContent = movieDateText;
+
+  if(titleEl) titleEl.textContent = movieTitle;
+  if(subEl) subEl.textContent = movieDateText;
 
   const heroMovie = document.getElementById("heroMovieStatus");
-  if(heroMovie) heroMovie.textContent = `Кіновечір: ${movie.tmdbTitle || movie.title || "заплановано"}`;
+  if(heroMovie) heroMovie.textContent = `Кіновечір: ${movieTitle}`;
+
+  if(spotlight){
+    const esc = (v="") => String(v)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+
+    const poster = movie.posterUrl || movie.photoData || "";
+    const requester = movie.requester || "";
+    const year = movie.year || (movie.releaseDate ? String(movie.releaseDate).slice(0,4) : "");
+    const overview = movie.overview || "";
+
+    spotlight.innerHTML = `
+      ${poster
+        ? `<img class="movie-spotlight-poster" src="${esc(poster)}" alt="Постер ${esc(movieTitle)}">`
+        : `<div class="movie-spotlight-placeholder">Постер поки відсутній</div>`}
+
+      <div class="movie-spotlight-main">
+        <div class="movie-spotlight-label">Найближчий кіновечір</div>
+        <h3 class="movie-spotlight-title">${esc(movieTitle)}</h3>
+
+        <div class="movie-spotlight-meta">
+          <span class="movie-spotlight-chip">📅 ${esc(movieDateText)}</span>
+          ${year ? `<span class="movie-spotlight-chip">🎞 ${esc(year)}</span>` : ""}
+          ${requester ? `<span class="movie-spotlight-chip requester">🙋 Замовив ${esc(requester)}</span>` : ""}
+        </div>
+
+        ${overview ? `<div class="movie-spotlight-overview">${esc(overview)}</div>` : ""}
+
+        <div class="movie-spotlight-actions">
+          <a class="btn blue" href="calendar.html">Відкрити календар</a>
+          <a class="btn outline" href="queue.html">Черга фільмів</a>
+        </div>
+      </div>
+    `;
+  }
 });
 
 
