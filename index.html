@@ -647,6 +647,48 @@ body.menu-open{overflow:hidden}
   text-overflow:ellipsis;
 }
 
+
+/* ===== HOME v5 — LIVE DETAILS + COUNTDOWN ===== */
+.stream-extra{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+  justify-content:center;
+}
+.stream-extra-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 9px;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.5px;
+  color:#c5d2df;
+  background:rgba(2,9,16,.72);
+  border:1px solid rgba(19,184,255,.25);
+}
+.stream-extra-chip.live-chip{
+  border-color:rgba(255,64,87,.35);
+  color:#ff9ba6;
+}
+.next-countdown{
+  margin-top:9px;
+  font-size:12px;
+  color:#9fb4c7;
+}
+.next-countdown b{
+  color:#fff;
+}
+.twitch-cta.is-live-now{
+  background:linear-gradient(135deg,#ff5c70,#ff2f49)!important;
+  color:#fff!important;
+  box-shadow:0 0 30px rgba(255,64,87,.32)!important;
+}
+.twitch-cta.is-live-now::before{
+  border-color:rgba(255,64,87,.45)!important;
+}
+
 </style>
 <style>
 [hidden] { display: none !important; }
@@ -709,6 +751,10 @@ body.menu-open{overflow:hidden}
     <div class="screenlabel">
       <b class="live-title" id="twitchStreamTitle">Відкрити Twitch</b>
       <small id="twitchStreamSubtitle">Перевіряю статус каналу…</small>
+      <div class="stream-extra" id="streamExtra" hidden>
+        <span class="stream-extra-chip live-chip" id="streamDurationChip">⏱ 00:00</span>
+        <span class="stream-extra-chip" id="streamStartedChip">Старт —</span>
+      </div>
     </div>
   </a>
   <div class="bar">
@@ -721,7 +767,7 @@ body.menu-open{overflow:hidden}
   <a class="home-info-card" href="#schedule">
     <div class="home-info-kicker"><span>🗓 Наступний стрім</span><span class="home-info-arrow">↘</span></div>
     <div class="home-info-value" id="homeNextStream">Рахую…</div>
-    <div class="home-info-sub" id="homeNextStreamSub">За розкладом каналу</div>
+    <div class="home-info-sub" id="homeNextStreamSub">За розкладом каналу</div><div class="next-countdown" id="homeNextStreamCountdown"></div>
   </a>
 
   <a class="home-info-card orange" href="calendar.html">
@@ -867,6 +913,26 @@ function formatViewerCount(n){
   return new Intl.NumberFormat("uk-UA").format(value);
 }
 
+
+let currentLiveStartedAt = null;
+
+function formatDuration(ms){
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if(h > 0) return `${h} год ${String(m).padStart(2,"0")} хв`;
+  return `${m} хв ${String(s).padStart(2,"0")} с`;
+}
+
+function updateLiveDuration(){
+  if(!currentLiveStartedAt) return;
+  const chip = document.getElementById("streamDurationChip");
+  if(chip) chip.textContent = `⏱ ${formatDuration(Date.now() - currentLiveStartedAt.getTime())}`;
+}
+
+setInterval(updateLiveDuration, 1000);
+
 function applyTwitchStatus(data){
   const live = !!data?.live;
   const badge = document.getElementById("twitchLiveBadge");
@@ -886,6 +952,17 @@ function applyTwitchStatus(data){
     if(statusText) statusText.textContent = "LIVE";
     if(title) title.textContent = data.title || "YevheniiPel зараз у прямому ефірі";
     if(subtitle) subtitle.textContent = "Натисни, щоб дивитися стрім на Twitch";
+
+    const extra = document.getElementById("streamExtra");
+    const startedChip = document.getElementById("streamStartedChip");
+    currentLiveStartedAt = data.started_at ? new Date(data.started_at) : null;
+    if(extra) extra.hidden = !currentLiveStartedAt;
+    if(currentLiveStartedAt && startedChip){
+      startedChip.textContent = `Старт ${currentLiveStartedAt.toLocaleTimeString("uk-UA",{hour:"2-digit",minute:"2-digit"})}`;
+    }
+    updateLiveDuration();
+
+    document.querySelectorAll(".twitch-cta").forEach(x=>x.classList.add("is-live-now"));
     if(game) game.textContent = data.game_name ? `🎮 ${data.game_name}` : "🎮 Twitch";
     if(viewers){
       viewers.innerHTML = `<span class="stream-viewers">● ${formatViewerCount(data.viewer_count)} глядачів</span>`;
@@ -901,6 +978,11 @@ function applyTwitchStatus(data){
     if(statusText) statusText.textContent = "OFFLINE";
     if(title) title.textContent = "Зараз стрім не йде";
     if(subtitle) subtitle.textContent = "Натисни, щоб перейти на канал Twitch";
+
+    currentLiveStartedAt = null;
+    const extra = document.getElementById("streamExtra");
+    if(extra) extra.hidden = true;
+    document.querySelectorAll(".twitch-cta").forEach(x=>x.classList.remove("is-live-now"));
     if(game) game.textContent = "🎮 Twitch";
     if(viewers) viewers.textContent = "До зустрічі на наступному стрімі";
     if(screenbox){
@@ -1695,6 +1777,8 @@ const STREAM_SCHEDULE = {
   6: "10:00"  // Сб
 };
 
+let nextStreamDate = null;
+
 function updateNextStreamCard(){
   const now = new Date();
 
@@ -1711,6 +1795,7 @@ function updateNextStreamCard(){
 
     if(d <= now) continue;
 
+    nextStreamDate = new Date(d);
     const dayText = add===0 ? "Сьогодні" : add===1 ? "Завтра" : DAY_NAMES[d.getDay()];
     document.getElementById("homeNextStream").textContent = `${dayText} · ${time}`;
 
@@ -1728,6 +1813,31 @@ function updateNextStreamCard(){
     return;
   }
 }
+
+
+function updateNextStreamCountdown(){
+  const el = document.getElementById("homeNextStreamCountdown");
+  if(!el || !nextStreamDate) return;
+
+  const diff = nextStreamDate.getTime() - Date.now();
+  if(diff <= 0){
+    el.textContent = "Стрім має вже початися";
+    return;
+  }
+
+  const totalMin = Math.floor(diff / 60000);
+  const days = Math.floor(totalMin / (60*24));
+  const hours = Math.floor((totalMin % (60*24)) / 60);
+  const mins = totalMin % 60;
+
+  let txt = "До стріму: ";
+  if(days) txt += `${days} дн `;
+  if(hours || days) txt += `${hours} год `;
+  txt += `${mins} хв`;
+  el.innerHTML = `<b>${txt}</b>`;
+}
+
+setInterval(updateNextStreamCountdown, 30000);
 
 function normalizeMovieDate(value){
   if(!value) return null;
@@ -1816,6 +1926,7 @@ function updateHomeNowPlaying(){
 }
 
 updateNextStreamCard();
+updateNextStreamCountdown();
 setInterval(updateNextStreamCard, 60 * 1000);
 
 onValue(musicRef, async snap => {
