@@ -411,6 +411,242 @@ body.menu-open{overflow:hidden}
   }
 }
 
+
+/* ===== HOME LIVE DASHBOARD v2 ===== */
+.home-dashboard{
+  margin:0;
+  padding:20px 7% 24px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  border-top:1px solid rgba(19,184,255,.12);
+  border-bottom:1px solid rgba(19,184,255,.16);
+  background:linear-gradient(180deg,rgba(3,9,17,.72),rgba(2,6,12,.92));
+}
+.home-info-card{
+  min-height:122px;
+  padding:18px 20px;
+  position:relative;
+  overflow:hidden;
+  text-decoration:none;
+  color:inherit;
+  border:1px solid rgba(19,184,255,.24);
+  background:linear-gradient(145deg,rgba(8,19,32,.96),rgba(3,9,17,.96));
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.home-info-card:before{
+  content:"";
+  position:absolute;
+  left:0;top:0;width:82px;height:2px;
+  background:var(--cyan);
+  box-shadow:0 0 15px var(--cyan);
+}
+.home-info-card.orange:before{
+  background:var(--orange);
+  box-shadow:0 0 15px var(--orange);
+}
+.home-info-card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(19,184,255,.72);
+  box-shadow:0 0 24px rgba(19,184,255,.10);
+}
+.home-info-kicker{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+  color:#7f97ad;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1.35px;
+  text-transform:uppercase;
+}
+.home-info-value{
+  font-size:clamp(18px,2vw,25px);
+  line-height:1.15;
+  font-weight:900;
+  color:#f7fbff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.home-info-sub{
+  margin-top:8px;
+  color:#8396a9;
+  font-size:12px;
+  line-height:1.4;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.home-info-arrow{color:var(--cyan);font-size:16px}
+.home-info-card.orange .home-info-arrow{color:var(--orange)}
+.home-pulse-dot{
+  width:7px;height:7px;border-radius:50%;
+  display:inline-block;margin-right:6px;
+  background:var(--cyan);
+  box-shadow:0 0 12px var(--cyan);
+  animation:homeDotPulse 1.7s ease-in-out infinite;
+}
+@keyframes homeDotPulse{50%{opacity:.35;transform:scale(.7)}}
+
+.hero .bar .live{color:var(--orange)!important}
+
+@media(max-width:900px){
+  .home-dashboard{grid-template-columns:1fr;padding-left:5%;padding-right:5%}
+  .home-info-card{min-height:105px}
+}
+
+
+/* ===== HOME POLISH v3 ===== */
+.home-dashboard{grid-template-columns:repeat(4,minmax(0,1fr))}
+.home-info-card.queue:before{
+  background:linear-gradient(90deg,var(--orange),var(--cyan));
+  box-shadow:0 0 15px rgba(255,138,24,.35);
+}
+.home-info-card.queue .home-info-arrow{color:var(--orange)}
+.day.is-next-stream{
+  position:relative;
+  background:linear-gradient(90deg,rgba(19,184,255,.09),transparent);
+  border-bottom-color:rgba(19,184,255,.32);
+}
+.day.is-next-stream:before{
+  content:"НАСТУПНИЙ";
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:9px;
+  letter-spacing:1.3px;
+  font-weight:900;
+  color:var(--cyan);
+  border:1px solid rgba(19,184,255,.35);
+  padding:5px 7px;
+  background:rgba(2,10,18,.78);
+}
+.day.is-today{
+  background:linear-gradient(90deg,rgba(255,138,24,.07),transparent);
+}
+.day.is-today span:first-child{color:var(--orange)!important;font-weight:900}
+.quick-floating{
+  position:fixed;
+  right:18px;
+  bottom:104px;
+  z-index:89;
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  text-decoration:none;
+  color:#fff;
+  border:1px solid rgba(19,184,255,.4);
+  background:rgba(4,12,21,.88);
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 22px rgba(19,184,255,.12);
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(10px);
+  transition:.2s;
+}
+.quick-floating.show{opacity:1;pointer-events:auto;transform:none}
+.quick-floating:hover{border-color:var(--cyan);box-shadow:0 0 24px rgba(19,184,255,.25)}
+
+.hero-mini-status{
+  margin-top:14px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.hero-mini-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 10px;
+  font-size:11px;
+  font-weight:800;
+  color:#9fb4c7;
+  border:1px solid rgba(19,184,255,.18);
+  background:rgba(4,11,19,.5);
+}
+.hero-mini-chip b{color:#fff}
+
+@media(max-width:1100px){
+  .home-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .home-dashboard{grid-template-columns:1fr}
+  .day.is-next-stream:before{position:static;transform:none;margin-left:auto}
+  .quick-floating{right:10px;bottom:92px}
+}
+
+
+/* ===== REAL TWITCH LIVE STATUS v4 ===== */
+.twitch-live-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-weight:900;
+  letter-spacing:.5px;
+  transition:.25s;
+}
+.twitch-live-badge .status-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#65707f;
+  box-shadow:none;
+}
+.twitch-live-badge.is-live{color:#ff6b7a!important}
+.twitch-live-badge.is-live .status-dot{
+  background:#ff4057;
+  box-shadow:0 0 13px #ff4057;
+  animation:twitchLivePulse 1.25s ease-in-out infinite;
+}
+.twitch-live-badge.is-offline{color:#728398!important}
+@keyframes twitchLivePulse{
+  50%{opacity:.35;transform:scale(.72)}
+}
+
+.screen.is-live{
+  border-color:rgba(255,64,87,.55)!important;
+  box-shadow:0 0 34px rgba(255,64,87,.13),inset 0 0 30px rgba(19,184,255,.04)!important;
+}
+.screenbox.has-live-preview{
+  background-size:cover!important;
+  background-position:center!important;
+}
+.screenbox.has-live-preview:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.68));
+  z-index:0;
+}
+.screenbox.has-live-preview .play,
+.screenbox.has-live-preview .screenlabel{
+  position:relative;
+  z-index:1;
+}
+.stream-viewers{
+  color:#ff8795;
+  font-weight:800;
+}
+.stream-game{
+  color:#92a6ba;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:55%;
+}
+.live-title{
+  display:block;
+  max-width:420px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
 </style>
 <style>
 [hidden] { display: none !important; }
@@ -459,8 +695,53 @@ body.menu-open{overflow:hidden}
     <a class="btn blue" href="https://www.twitch.tv/yevheniipel" target="_blank">Twitch ↗</a>
   </div>
 </aside>
-<main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Євгеній.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue twitch-cta" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div></div><div class="screen"><div class="bar"><span>YevheniiPel</span><span class="live">● LIVE</span></div><a class="screenbox" href="https://www.twitch.tv/yevheniipel" target="_blank"><div class="play">▶</div><div class="screenlabel"><b>Відкрити стрім</b><small>Натисни, щоб перейти на Twitch</small></div></a><div class="bar"><span>🎮 Twitch</span><span>Приєднуйся до чату</span></div></div></section>
-<section class="stats"><div><b>01</b><small>Стрімер</small></div><div><b>∞</b><small>Ідей</small></div><div><b>100%</b><small>Живого контенту</small></div></section>
+<main id="top"><section class="hero"><div><div class="tag"><i>●</i> YEVHENIIPEL • STREAM</div><h1>Тут просто<br><span>Євгеній.</span></h1><p>Ігри, фільми, розмови та вечори, які ми проводимо разом. Ласкаво просимо у мій маленький інтернет-простір.</p><div class="buttons"><a class="btn blue twitch-cta" href="https://www.twitch.tv/yevheniipel" target="_blank">Дивитися Twitch</a><a class="btn outline" href="#about">Про мене ↓</a></div>
+<div class="hero-mini-status">
+  <span class="hero-mini-chip">🗓 <span id="heroNextStream">Наступний стрім: рахую…</span></span>
+  <span class="hero-mini-chip">🎬 <span id="heroMovieStatus">Кіновечір: завантаження…</span></span>
+</div></div><div class="screen" id="twitchScreen">
+  <div class="bar">
+    <span>YevheniiPel</span>
+    <span class="twitch-live-badge" id="twitchLiveBadge"><i class="status-dot"></i><span id="twitchStatusText">ПЕРЕВІРЯЮ…</span></span>
+  </div>
+  <a class="screenbox" id="twitchScreenbox" href="https://www.twitch.tv/yevheniipel" target="_blank">
+    <div class="play">▶</div>
+    <div class="screenlabel">
+      <b class="live-title" id="twitchStreamTitle">Відкрити Twitch</b>
+      <small id="twitchStreamSubtitle">Перевіряю статус каналу…</small>
+    </div>
+  </a>
+  <div class="bar">
+    <span class="stream-game" id="twitchGame">🎮 Twitch</span>
+    <span id="twitchViewerInfo">Приєднуйся до чату</span>
+  </div>
+</div></section>
+
+<section class="home-dashboard" aria-label="Актуальна інформація">
+  <a class="home-info-card" href="#schedule">
+    <div class="home-info-kicker"><span>🗓 Наступний стрім</span><span class="home-info-arrow">↘</span></div>
+    <div class="home-info-value" id="homeNextStream">Рахую…</div>
+    <div class="home-info-sub" id="homeNextStreamSub">За розкладом каналу</div>
+  </a>
+
+  <a class="home-info-card orange" href="calendar.html">
+    <div class="home-info-kicker"><span>🎬 Найближчий кіновечір</span><span class="home-info-arrow">↗</span></div>
+    <div class="home-info-value" id="homeNextMovie">Завантаження…</div>
+    <div class="home-info-sub" id="homeNextMovieSub">Відкрити календар</div>
+  </a>
+
+  <a class="home-info-card" href="#music">
+    <div class="home-info-kicker"><span><i class="home-pulse-dot"></i>Зараз грає</span><span class="home-info-arrow">↓</span></div>
+    <div class="home-info-value" id="homeNowPlaying">Очікуємо музику…</div>
+    <div class="home-info-sub" id="homeNowPlayingSub">Спільний плеєр YevheniiPel</div>
+  </a>
+
+  <a class="home-info-card queue" href="queue.html">
+    <div class="home-info-kicker"><span>🍿 Черга фільмів</span><span class="home-info-arrow">↗</span></div>
+    <div class="home-info-value" id="homeQueueCount">Завантаження…</div>
+    <div class="home-info-sub" id="homeQueueSub">Перевірити замовлення глядачів</div>
+  </a>
+</section>
 <section id="about" class="section about"><div class="label">01 / ПРО МЕНЕ</div><div><h2>Привіт, я <span>Євгеній.</span></h2><p class="lead">Створюю місце, куди хочеться повертатися.</p><p>YevheniiPel — це не тільки Twitch-канал. Це місце для хорошого вечора: пограти, поговорити, подивитися кіно або просто зависнути разом із чатом.</p></div></section>
 <section id="content" class="section"><div class="label">02 / КОНТЕНТ</div><h2>Що будемо <span>робити?</span></h2><div class="cards"><a class="card card-link" href="https://steamcommunity.com/id/ShineWarYouTube/" target="_blank" rel="noopener noreferrer"><div class="icon">🎮</div><h3>Ігри</h3><p>Різні ігри, живий чат і моменти, які народжуються прямо на стрімі.</p><div class="card-go">Мій Steam →</div></a><a class="card card-link" href="calendar.html"><div class="icon">🎬</div><h3>Фільми & шоу</h3><p>Спільні перегляди та вечори з хорошим кіно і компанією.</p><div class="card-go">Календар кіновечорів →</div></a><a class="card card-link" href="https://t.me/ZhenyaTwitch" target="_blank" rel="noopener noreferrer"><div class="icon">💬</div><h3>Just Chatting</h3><p>Розмови, історії, новини та все, що хочеться обговорити.</p><div class="card-go">Telegram →</div></a></div></section>
 
@@ -506,6 +787,7 @@ body.menu-open{overflow:hidden}
 <footer><span>© 2026 YevheniiPel</span><span>Зроблено для стріму, а не для нудьги.</span></footer>
 
 
+<a id="backToTopBtn" class="quick-floating" href="#top" aria-label="На початок сторінки">↑</a>
 <div id="musicFrameHost"></div>
 
 <section class="ym-queue" id="ymQueue" aria-label="Черга музики">
@@ -566,9 +848,86 @@ const db = getDatabase(app);
 
 const musicRef = ref(db, "musicQueue");
 const stateRef = ref(db, "musicState");
+const moviesRef = ref(db, "movies");
+const movieQueueRef = ref(db, "queue");
 const WORKER_URL = "https://yevheniipel-movie-queue.shinewar06.workers.dev";
 
 const SITE_SESSION_KEY = "yevheniipel_twitch_session";
+
+let twitchStatusTimer = null;
+
+function twitchPreviewUrl(template){
+  return String(template || "")
+    .replace("{width}", "640")
+    .replace("{height}", "360");
+}
+
+function formatViewerCount(n){
+  const value = Number(n || 0);
+  return new Intl.NumberFormat("uk-UA").format(value);
+}
+
+function applyTwitchStatus(data){
+  const live = !!data?.live;
+  const badge = document.getElementById("twitchLiveBadge");
+  const statusText = document.getElementById("twitchStatusText");
+  const screen = document.getElementById("twitchScreen");
+  const screenbox = document.getElementById("twitchScreenbox");
+  const title = document.getElementById("twitchStreamTitle");
+  const subtitle = document.getElementById("twitchStreamSubtitle");
+  const game = document.getElementById("twitchGame");
+  const viewers = document.getElementById("twitchViewerInfo");
+
+  badge?.classList.toggle("is-live", live);
+  badge?.classList.toggle("is-offline", !live);
+  screen?.classList.toggle("is-live", live);
+
+  if(live){
+    if(statusText) statusText.textContent = "LIVE";
+    if(title) title.textContent = data.title || "YevheniiPel зараз у прямому ефірі";
+    if(subtitle) subtitle.textContent = "Натисни, щоб дивитися стрім на Twitch";
+    if(game) game.textContent = data.game_name ? `🎮 ${data.game_name}` : "🎮 Twitch";
+    if(viewers){
+      viewers.innerHTML = `<span class="stream-viewers">● ${formatViewerCount(data.viewer_count)} глядачів</span>`;
+    }
+
+    const preview = twitchPreviewUrl(data.thumbnail_url);
+    if(screenbox && preview){
+      const cacheBust = `${preview}${preview.includes("?") ? "&" : "?"}t=${Date.now()}`;
+      screenbox.style.backgroundImage = `url("${cacheBust}")`;
+      screenbox.classList.add("has-live-preview");
+    }
+  }else{
+    if(statusText) statusText.textContent = "OFFLINE";
+    if(title) title.textContent = "Зараз стрім не йде";
+    if(subtitle) subtitle.textContent = "Натисни, щоб перейти на канал Twitch";
+    if(game) game.textContent = "🎮 Twitch";
+    if(viewers) viewers.textContent = "До зустрічі на наступному стрімі";
+    if(screenbox){
+      screenbox.style.backgroundImage = "";
+      screenbox.classList.remove("has-live-preview");
+    }
+  }
+}
+
+async function refreshTwitchStatus(){
+  try{
+    const r = await fetch(`${WORKER_URL}/twitch/status`, { cache:"no-store" });
+    const data = await r.json();
+    if(!r.ok || !data?.ok) throw new Error(data?.error || "Twitch status failed");
+    applyTwitchStatus(data);
+  }catch(err){
+    console.warn("Twitch status:", err);
+    const statusText = document.getElementById("twitchStatusText");
+    const subtitle = document.getElementById("twitchStreamSubtitle");
+    if(statusText) statusText.textContent = "TWITCH";
+    if(subtitle) subtitle.textContent = "Натисни, щоб перейти на Twitch";
+  }
+}
+
+refreshTwitchStatus();
+twitchStatusTimer = setInterval(refreshTwitchStatus, 60000);
+
 let siteUser = null;
 
 function currentPageName() {
@@ -1326,6 +1685,139 @@ adminLogoutBtn?.addEventListener("click", siteLogout);
 initSiteAuth();
 
 // Realtime queue
+
+// ===== HOME DASHBOARD =====
+const DAY_NAMES = ["Нд","Пн","Вт","Ср","Чт","Пт","Сб"];
+const STREAM_SCHEDULE = {
+  1: "19:00", // Пн
+  3: "19:00", // Ср
+  5: "19:00", // Пт
+  6: "10:00"  // Сб
+};
+
+function updateNextStreamCard(){
+  const now = new Date();
+
+  for(let add=0; add<8; add++){
+    const d = new Date(now);
+    d.setDate(now.getDate()+add);
+    d.setHours(0,0,0,0);
+
+    const time = STREAM_SCHEDULE[d.getDay()];
+    if(!time) continue;
+
+    const [hh,mm] = time.split(":").map(Number);
+    d.setHours(hh,mm,0,0);
+
+    if(d <= now) continue;
+
+    const dayText = add===0 ? "Сьогодні" : add===1 ? "Завтра" : DAY_NAMES[d.getDay()];
+    document.getElementById("homeNextStream").textContent = `${dayText} · ${time}`;
+
+    const dateText = d.toLocaleDateString("uk-UA",{day:"numeric",month:"long"});
+    document.getElementById("homeNextStreamSub").textContent = `${dateText} · Twitch YevheniiPel`;
+
+    const hero = document.getElementById("heroNextStream");
+    if(hero) hero.textContent = `Наступний стрім: ${dayText.toLowerCase()} о ${time}`;
+
+    document.querySelectorAll("#schedule .day").forEach(x=>x.classList.remove("is-next-stream"));
+    const scheduleRows=[...document.querySelectorAll("#schedule .day")];
+    const map={1:0,2:1,3:2,4:3,5:4,6:5,0:6};
+    const row=scheduleRows[map[d.getDay()]];
+    row?.classList.add("is-next-stream");
+    return;
+  }
+}
+
+function normalizeMovieDate(value){
+  if(!value) return null;
+  const d = new Date(`${value}T00:00:00`);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+onValue(moviesRef, snap=>{
+  const raw = snap.val() || {};
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const upcoming = Object.values(raw)
+    .map(movie=>({...movie,_date:normalizeMovieDate(movie.date)}))
+    .filter(movie=>movie._date && movie._date >= today && movie.status !== "watched")
+    .sort((a,b)=>a._date-b._date);
+
+  const titleEl = document.getElementById("homeNextMovie");
+  const subEl = document.getElementById("homeNextMovieSub");
+  if(!titleEl || !subEl) return;
+
+  if(!upcoming.length){
+    titleEl.textContent = "Поки не заплановано";
+    subEl.textContent = "Переглянути календар кіновечорів";
+    const heroMovie = document.getElementById("heroMovieStatus");
+    if(heroMovie) heroMovie.textContent = "Кіновечір: поки не заплановано";
+    return;
+  }
+
+  const movie = upcoming[0];
+  titleEl.textContent = movie.tmdbTitle || movie.title || "Кіновечір";
+  const movieDateText = movie._date.toLocaleDateString("uk-UA",{
+    weekday:"short", day:"numeric", month:"long"
+  });
+  subEl.textContent = movieDateText;
+
+  const heroMovie = document.getElementById("heroMovieStatus");
+  if(heroMovie) heroMovie.textContent = `Кіновечір: ${movie.tmdbTitle || movie.title || "заплановано"}`;
+});
+
+
+onValue(movieQueueRef, snap=>{
+  const raw=snap.val()||{};
+  const count=Object.keys(raw).length;
+  const el=document.getElementById("homeQueueCount");
+  const sub=document.getElementById("homeQueueSub");
+  if(el) el.textContent = count ? `${count} ${count===1?"фільм":(count>=2&&count<=4?"фільми":"фільмів")}` : "Черга порожня";
+  if(sub) sub.textContent = count ? "Відкрити та перевірити чергу" : "Нові замовлення з Twitch з’являться тут";
+});
+
+function markTodayInSchedule(){
+  const rows=[...document.querySelectorAll("#schedule .day")];
+  const map={1:0,2:1,3:2,4:3,5:4,6:5,0:6};
+  rows.forEach(x=>x.classList.remove("is-today"));
+  rows[map[new Date().getDay()]]?.classList.add("is-today");
+}
+markTodayInSchedule();
+
+const backToTopBtn=document.getElementById("backToTopBtn");
+window.addEventListener("scroll",()=>{
+  backToTopBtn?.classList.toggle("show",window.scrollY>700);
+},{passive:true});
+
+function updateHomeNowPlaying(){
+  const titleEl = document.getElementById("homeNowPlaying");
+  const subEl = document.getElementById("homeNowPlayingSub");
+  if(!titleEl || !subEl) return;
+
+  let track = null;
+
+  if(state?.source === "radio" && state?.radioTrack){
+    track = state.radioTrack;
+  } else if(state?.currentId){
+    track = queue.find(x=>x.id===state.currentId) || null;
+  }
+
+  if(!track){
+    titleEl.textContent = "Очікуємо музику…";
+    subEl.textContent = "Замов пісню на Twitch за бали каналу";
+    return;
+  }
+
+  titleEl.textContent = track.title || "YouTube трек";
+  const who = track.requester ? ` · замовив ${track.requester}` : "";
+  subEl.textContent = `${track.artist || "YouTube"}${who}`;
+}
+
+updateNextStreamCard();
+setInterval(updateNextStreamCard, 60 * 1000);
+
 onValue(musicRef, async snap => {
   const data = snap.val() || {};
   const incomingIds = new Set(Object.keys(data));
@@ -1374,7 +1866,11 @@ onValue(musicRef, async snap => {
 });
 
 // Realtime playback state
+
+onValue(musicRef, ()=>setTimeout(updateHomeNowPlaying,0));
+
 onValue(stateRef, snap => {
+  setTimeout(updateHomeNowPlaying, 0);
   remoteState = snap.val() || {};
   applyRemoteState();
 });
