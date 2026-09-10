@@ -677,10 +677,110 @@ $('addForm').addEventListener('submit',async e=>{e.preventDefault();if(!isAdmin)
   syncAuth();
   setInterval(syncAuth, 400);
 
-  const current = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll("[data-site-page]").forEach(a => {
-    if(a.dataset.sitePage === current) a.classList.add("active");
-  });
+  // Активний пункт навігації
+  const navLinks = [...document.querySelectorAll(".site-desktop-links a, .site-mobile-links a")];
+
+  function clearActiveNav(){
+    navLinks.forEach(a => a.classList.remove("active"));
+  }
+
+  function setActiveByKey(key){
+    clearActiveNav();
+
+    navLinks.forEach(a => {
+      const href = a.getAttribute("href") || "";
+
+      if(key === "home" && a.dataset.sitePage === "index.html"){
+        a.classList.add("active");
+      }
+
+      if(key === "calendar" && a.dataset.sitePage === "calendar.html"){
+        a.classList.add("active");
+      }
+
+      if(["about","content","music","schedule","socials"].includes(key)){
+        if(
+          href === `#${key}` ||
+          href.endsWith(`index.html#${key}`)
+        ){
+          a.classList.add("active");
+        }
+      }
+    });
+  }
+
+  const currentPage = location.pathname.split("/").pop() || "index.html";
+
+  if(currentPage === "calendar.html"){
+    setActiveByKey("calendar");
+  } else if(currentPage === "index.html"){
+    const sectionIds = ["about","content","music","schedule","socials"];
+    const sections = sectionIds
+      .map(id => document.getElementById(id))
+      .filter(Boolean);
+
+    function updateActiveSection(){
+      const headerOffset = 110;
+      const y = window.scrollY + headerOffset;
+
+      let activeSection = "home";
+
+      for(const section of sections){
+        if(section.offsetTop <= y){
+          activeSection = section.id;
+        }
+      }
+
+      // Біля самого верху завжди "Головна"
+      if(window.scrollY < 180){
+        activeSection = "home";
+      }
+
+      setActiveByKey(activeSection);
+    }
+
+    // Якщо сторінка відкрилась одразу з #content / #music тощо
+    const initialHash = location.hash.replace("#","");
+    if(sectionIds.includes(initialHash)){
+      setActiveByKey(initialHash);
+    } else {
+      updateActiveSection();
+    }
+
+    let navScrollTick = false;
+    window.addEventListener("scroll", () => {
+      if(navScrollTick) return;
+      navScrollTick = true;
+
+      requestAnimationFrame(() => {
+        updateActiveSection();
+        navScrollTick = false;
+      });
+    }, { passive:true });
+
+    window.addEventListener("hashchange", () => {
+      const hash = location.hash.replace("#","");
+      if(sectionIds.includes(hash)){
+        setActiveByKey(hash);
+      } else {
+        updateActiveSection();
+      }
+    });
+
+    // Миттєво підсвічує пункт при кліку, ще до завершення прокрутки
+    navLinks.forEach(a => {
+      const href = a.getAttribute("href") || "";
+      const hashMatch = href.match(/#(about|content|music|schedule|socials)$/);
+      if(hashMatch){
+        a.addEventListener("click", () => setActiveByKey(hashMatch[1]));
+      }
+    });
+  } else {
+    // queue.html та інші службові сторінки:
+    // не підсвічуємо помилково "Головна"
+    clearActiveNav();
+  }
+
 })();
 </script>
 
