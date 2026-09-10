@@ -74,7 +74,7 @@ body{padding-bottom:92px}
  body{padding-bottom:76px}
  .music-form{grid-template-columns:1fr}.music-form .full{grid-column:auto}
  .ym-player{height:76px;grid-template-columns:auto minmax(0,1fr) auto;padding:0 10px;gap:8px}
- .ym-controls .prev,.ym-controls .next{display:none}
+ .ym-controls .prev,.ym-controls .next{display:inline-flex}
  .ym-thumb{width:44px;height:44px}
  .ym-right .labeltxt{display:none}
  .ym-queue{bottom:76px;max-height:60vh}
@@ -803,6 +803,32 @@ body.menu-open{overflow:hidden}
   .movie-spotlight-placeholder{
     max-width:180px;
     margin:0 auto;
+  }
+}
+
+
+/* Music player mobile transport fix */
+@media(max-width:800px){
+  .ym-controls{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    flex:0 0 auto!important;
+  }
+  .ym-controls .ym-btn{
+    display:inline-flex!important;
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    padding:0!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .ym-queue-btn{
+    min-width:44px!important;
+  }
+  .ym-queue-btn .labeltxt{
+    display:none!important;
   }
 }
 
@@ -2064,7 +2090,6 @@ function applyAuthUI() {
   }
   renderQueue();
 }
- siteLogout(); });
 adminLoginBtn?.addEventListener("click", beginTwitchLogin);
 adminLogoutBtn?.addEventListener("click", siteLogout);
 initSiteAuth();

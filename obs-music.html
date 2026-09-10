@@ -40,6 +40,28 @@ const app=initializeApp({
 });
 const db=getDatabase(app);
 
+const WORKER_URL="https://yevheniipel-movie-queue.shinewar06.workers.dev";
+const OBS_CONTROL_KEY=new URLSearchParams(location.search).get("key")||"";
+let advancing=false;
+
+async function requestAdvance(videoId){
+  if(!OBS_CONTROL_KEY || advancing) return;
+  advancing=true;
+  try{
+    const r=await fetch(`${WORKER_URL}/music/advance?key=${encodeURIComponent(OBS_CONTROL_KEY)}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({videoId:videoId||""})
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok || !data.ok) console.error("music/advance:",data);
+  }catch(err){
+    console.error("music/advance:",err);
+  }finally{
+    setTimeout(()=>{advancing=false},1500);
+  }
+}
+
 let queue={}, state={}, player=null, apiReady=false, currentVideo="";
 const $=id=>document.getElementById(id);
 
@@ -68,7 +90,23 @@ function sync(){
   if(!apiReady||!t?.videoId)return;
   const pos=expectedPosition(state);
   if(!player){
-    player=new YT.Player("yt",{height:"1",width:"1",videoId:t.videoId,playerVars:{autoplay:1,playsinline:1,rel:0},events:{onReady:e=>{e.target.seekTo(pos,true);state.isPlaying?e.target.playVideo():e.target.pauseVideo();}}});
+    player=new YT.Player("yt",{
+      height:"1",
+      width:"1",
+      videoId:t.videoId,
+      playerVars:{autoplay:1,playsinline:1,rel:0},
+      events:{
+        onReady:e=>{
+          e.target.seekTo(pos,true);
+          state.isPlaying?e.target.playVideo():e.target.pauseVideo();
+        },
+        onStateChange:e=>{
+          if(e.data===YT.PlayerState.ENDED){
+            requestAdvance(currentVideo);
+          }
+        }
+      }
+    });
     currentVideo=t.videoId;
     return;
   }
