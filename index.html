@@ -1649,10 +1649,19 @@ function createPlayer(videoId, startSeconds = 0, autoplay = false) {
       playerVars:{ autoplay: autoplay ? 1 : 0, playsinline:1, rel:0, start:Math.max(0,Math.floor(startSeconds)) },
       events:{
         onReady:e => {
-          if (startSeconds > 0) e.target.seekTo(startSeconds, true);
-          if (autoplay) e.target.playVideo();
-          else e.target.pauseVideo();
-        },
+  // Гучність усієї музики — 70%
+  e.target.setVolume(70);
+
+  if (startSeconds > 0) {
+    e.target.seekTo(startSeconds, true);
+  }
+
+  if (autoplay) {
+    e.target.playVideo();
+  } else {
+    e.target.pauseVideo();
+  }
+},
         onStateChange:e => {
           if (e.data === YT.PlayerState.PLAYING) playBtn.textContent = "⏸";
           if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) playBtn.textContent = "▶";
