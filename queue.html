@@ -392,6 +392,18 @@ body.site-menu-open{overflow:hidden}
   .site-mobile-drawer{width:92vw}
 }
 </style>
+
+<style>
+/* Profile opens by clicking the logged-in Twitch user */
+#authStatus:not(:empty), #siteUserBadge:not([hidden]), #siteMobileUser:not([hidden]),
+.site-user:not([hidden]), .site-mobile-user:not([hidden]){
+  cursor:pointer;
+}
+#authStatus:not(:empty):hover, #siteUserBadge:not([hidden]):hover, #siteMobileUser:not([hidden]):hover,
+.site-user:not([hidden]):hover, .site-mobile-user:not([hidden]):hover{
+  filter:brightness(1.18);
+}
+</style>
 </head>
 <body>
 
@@ -405,7 +417,6 @@ body.site-menu-open{overflow:hidden}
     <a href="index.html#music">Музика</a>
     <a href="index.html#schedule">Розклад</a>
     <a href="calendar.html" data-site-page="calendar.html">Календар</a>
-    <a href="profile.html" data-site-page="profile.html">Кабінет</a>
     <a href="index.html#socials">Соцмережі</a>
   </nav>
 
@@ -431,7 +442,6 @@ body.site-menu-open{overflow:hidden}
     <a href="index.html#music">Музика</a>
     <a href="index.html#schedule">Розклад</a>
     <a href="calendar.html" data-site-page="calendar.html">Календар</a>
-    <a href="profile.html" data-site-page="profile.html">Кабінет</a>
     <a href="index.html#socials">Соцмережі</a>
   </nav>
   <div class="site-mobile-auth">
@@ -1111,5 +1121,24 @@ document.getElementById('saveDate').onclick=async()=>{
 })();
 </script>
 
+
+<script>
+/* Open viewer profile by clicking their logged-in Twitch identity. */
+(() => {
+  const ids = ["authStatus","siteUserBadge","siteMobileUser"];
+  const bind = () => ids.forEach(id => {
+    const el=document.getElementById(id);
+    if(!el || el.dataset.profileBound==="1") return;
+    el.dataset.profileBound="1";
+    el.setAttribute("title","Відкрити мій кабінет");
+    el.setAttribute("role","link");
+    el.setAttribute("tabindex","0");
+    const go=()=>{ if(!el.hidden && el.textContent.trim()) location.href="profile.html"; };
+    el.addEventListener("click",go);
+    el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();go();} });
+  });
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
+})();
+</script>
 </body>
 </html>
