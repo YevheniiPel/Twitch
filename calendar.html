@@ -346,7 +346,12 @@ body.site-menu-open{overflow:hidden}
   filter:brightness(1.18);
 }
 </style>
-</head>
+<style>
+.schedule-calendar-cta{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;margin:0 0 25px;border:1px solid rgba(19,184,255,.32);border-radius:14px;background:linear-gradient(120deg,rgba(3,30,47,.9),rgba(13,13,29,.92))}
+.schedule-calendar-cta strong{display:block;font-size:18px;color:#f6fbff;margin-bottom:7px}.schedule-calendar-cta p{margin:0;font-size:13px;color:#a8bbcc;line-height:1.55}
+.schedule-calendar-cta .stream-calendar-download{flex-shrink:0;white-space:nowrap}
+@media(max-width:680px){.schedule-calendar-cta{flex-direction:column;align-items:stretch;padding:18px}.schedule-calendar-cta .stream-calendar-download{text-align:center}}
+</style></head>
 <body>
 
 <header class="site-nav-v2">
@@ -396,6 +401,10 @@ body.site-menu-open{overflow:hidden}
 
 <main class="container">
 <div class="header-actions"><div><h1 class="section-title">Календар <span>кіновечорів</span></h1></div><div class="header-buttons"><a class="queue-btn" href="queue.html">🎬 Черга фільмів</a><button class="btn blue admin-only" onclick="openAddModal()">+ Додати фільм</button></div></div>
+<div class="schedule-calendar-cta" aria-label="Розклад Twitch-трансляцій">
+  <div><strong>📅 Не пропускай стріми YevheniiPel</strong><p>Пн, Ср, Пт — 19:00 · Сб — 10:00 (Київ). Щотижневе повторення та нагадування за 15 хвилин.</p></div>
+  <a class="btn blue stream-calendar-download" href="stream-schedule.ics" download="YevheniiPel-stream-schedule.ics">Додати в календар ↓</a>
+</div>
 <p class="click-hint">Натисни на фільм у календарі, щоб відкрити деталі.</p>
 <div class="cal-controls"><h2 id="monthYearLabel">—</h2><div class="month-btns"><button class="btn-icon" onclick="changeMonth(-1)">←</button><button class="btn-icon" onclick="changeMonth(1)">→</button></div></div>
 <div class="calendar-grid" id="calendarGrid"><div class="day-name">Пн</div><div class="day-name">Вт</div><div class="day-name">Ср</div><div class="day-name">Чт</div><div class="day-name">Пт</div><div class="day-name">Сб</div><div class="day-name">Нд</div></div>
