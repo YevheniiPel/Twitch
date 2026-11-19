@@ -838,6 +838,26 @@ body.menu-open{overflow:hidden}
   }
 }
 
+
+/* Personalized Twitch viewer activity */
+.viewer-activity{max-width:1400px;margin:0 auto;padding:34px 7% 18px}
+.viewer-activity-shell{padding:28px;background:linear-gradient(125deg,rgba(12,31,52,.96),rgba(5,12,24,.96));border:1px solid rgba(88,168,255,.34);border-radius:22px;box-shadow:0 20px 55px rgba(0,0,0,.22)}
+.viewer-activity-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.viewer-activity-heading h2{font-size:clamp(22px,3vw,32px);margin:6px 0 0}
+.viewer-activity-kicker{font-size:11px;font-weight:800;letter-spacing:2px;color:#58a8ff;text-transform:uppercase}
+.viewer-activity-greeting{color:#d6e6fa;font-size:14px}
+.viewer-activity-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.viewer-activity-tile{padding:22px;border:1px solid rgba(112,152,200,.22);border-radius:15px;background:rgba(6,18,33,.75);min-width:0;text-decoration:none;color:inherit}
+.viewer-activity-tile:hover{border-color:#58a8ff}
+.viewer-activity-label{font-size:13px;color:#a7bfd9;margin-bottom:12px}
+.viewer-activity-value{font-size:clamp(19px,2.5vw,28px);font-weight:900;overflow-wrap:anywhere}
+.viewer-activity-desc{margin-top:8px;font-size:12px;color:#90a5bc;overflow-wrap:anywhere}
+.viewer-activity-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px}
+.viewer-activity-guest{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.viewer-activity-guest p{color:#a9bfd6;margin:8px 0 0}
+.viewer-activity [hidden]{display:none!important}
+@media(max-width:760px){.viewer-activity{padding:24px 5% 10px}.viewer-activity-shell{padding:20px}.viewer-activity-grid{grid-template-columns:1fr}.viewer-activity-tile{padding:17px}}
+
 </style>
 <style>
 [hidden] { display: none !important; }
@@ -1238,6 +1258,22 @@ body.site-menu-open{overflow:hidden}
     <span id="twitchViewerInfo">Приєднуйся до чату</span>
   </div>
 </div></section>
+
+
+<section class="viewer-activity" id="viewerActivity" aria-label="Центр активності глядача">
+  <div class="viewer-activity-shell">
+    <div class="viewer-activity-heading"><div><span class="viewer-activity-kicker">Твій простір на стрімі</span><h2>Центр активності <span>глядача</span></h2></div><span class="viewer-activity-greeting" id="viewerGreeting"></span></div>
+    <div class="viewer-activity-guest" id="viewerGuest"><p>Увійди через Twitch, щоб бачити свої Рижики, чергу фільмів та замовлення музики.</p><button class="btn blue" id="viewerLogin" type="button">Увійти через Twitch</button></div>
+    <div id="viewerSignedIn" hidden>
+      <div class="viewer-activity-grid" id="viewerActivityCards">
+        <a href="profile.html" class="viewer-activity-tile"><div class="viewer-activity-label">🍊 Баланс «Рижиків»</div><div class="viewer-activity-value" id="viewerPoints">—</div><div class="viewer-activity-desc" id="viewerPointsDesc">Перевіряємо баланс</div></a>
+        <a href="queue.html" class="viewer-activity-tile"><div class="viewer-activity-label">🎬 Мій фільм у черзі</div><div class="viewer-activity-value" id="viewerMovie">Завантаження…</div><div class="viewer-activity-desc" id="viewerMovieDesc">Перевіряємо чергу</div></a>
+        <a href="profile.html" class="viewer-activity-tile"><div class="viewer-activity-label">🎵 Останній замовлений трек</div><div class="viewer-activity-value" id="viewerTrack">Завантаження…</div><div class="viewer-activity-desc" id="viewerTrackDesc">Перевіряємо музику</div></a>
+      </div>
+      <div class="viewer-activity-actions"><a href="profile.html" class="btn blue">👤 Мій кабінет</a><a href="queue.html" class="btn outline">🍿 Черга фільмів</a></div>
+    </div>
+  </div>
+</section>
 
 <section class="home-dashboard" aria-label="Актуальна інформація">
   <a class="home-info-card" href="#schedule">
@@ -2794,4 +2830,5 @@ updateBar();
   setInterval(update,30000);
 })();
 </script>
+<script type="module" src="assets/viewer-activity.js"></script>
 </body></html>
